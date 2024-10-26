@@ -22,7 +22,7 @@ const validateYouTubeUrl = async (videoID: string): Promise<boolean> => {
 // Função para extrair o videoID de uma URL do YouTube
 const extractYouTubeVideoID = (url: string): string | null => {
   const regex =
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/;
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const match = url.match(regex);
   return match ? match[1] : null;
 };
@@ -44,6 +44,16 @@ const InputBar = () => {
       if (isValid) {
         console.log("URL válida do YouTube:", inputValue);
         console.log("ID do vídeo:", videoID);
+        toast.success("URL válida do Youtube!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
         //================================================================================================
         //
         //                  Aqui vai a lógica para enviar o ID do vídeo para a API
