@@ -87,7 +87,7 @@ const InputBar = () => {
       <div className="flex items-center w-full h-full bg-[#12121B] rounded-2xl">
         <input
           type="text"
-          placeholder="e.g.: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          placeholder="Ex.: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           maxLength={50}
           value={inputValue}
           onChange={handleInputChange}
@@ -98,8 +98,8 @@ const InputBar = () => {
           <button className="h-8 w-8" onClick={handleSend}>
             <Image
               src="/send.svg"
-              width={32}
-              height={32}
+              width={24}
+              height={24}
               alt="Send Icon"
             ></Image>
           </button>
