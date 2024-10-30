@@ -10,6 +10,10 @@ const ParentComponent = () => {
   const [selectedOptions, setSelectedOptions] = useState<(number | null)[]>([]); // Estado para armazenar as opções selecionadas
   const [showExplanation, setShowExplanation] = useState(false); // Novo estado para controlar a exibição da explicação
 
+
+  //! Faz algum código para pegar as perguntas do quiz aqui
+  //! Fácil se tiver salvo em variável local no InputBar.tsx
+
   // Dados de exemplo das perguntas
   const questionsData = [
     {
