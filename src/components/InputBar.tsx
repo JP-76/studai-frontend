@@ -1,17 +1,19 @@
-"use client";
+// InputBar.tsx
 
 import { useState } from "react";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+interface InputBarProps {
+  onSubmit: () => void; // Função que será chamada ao enviar o input
+}
+
 // Função para validar a URL do YouTube
 const validateYouTubeUrl = async (videoID: string): Promise<boolean> => {
   try {
     const url = `https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=${videoID}`;
-
     const response = await fetch(url);
-
     return response.ok;
   } catch (error) {
     console.error("Erro ao validar o vídeo do YouTube:", error);
@@ -27,14 +29,13 @@ const extractYouTubeVideoID = (url: string): string | null => {
   return match ? match[1] : null;
 };
 
-const InputBar = () => {
+const InputBar = ({ onSubmit }: InputBarProps) => {
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
-  // Função para enviar o valor
   const handleSend = async () => {
     const videoID = extractYouTubeVideoID(inputValue);
 
@@ -42,6 +43,13 @@ const InputBar = () => {
       const isValid = await validateYouTubeUrl(videoID);
 
       if (isValid) {
+        onSubmit();
+
+        // ============================================================
+        //! Aqui precisa ir o código de envio do videoID para a API
+        //! Pode salvar o quiz retornado em variável local para pegar no componente ParentComponent
+
+        //! Isso aqui pode sair depois, foi só para testar
         console.log("URL válida do YouTube:", inputValue);
         console.log("ID do vídeo:", videoID);
         toast.success("URL válida do Youtube!", {
@@ -54,11 +62,14 @@ const InputBar = () => {
           progress: undefined,
           theme: "dark",
         });
-        //================================================================================================
-        //
-        //                  Aqui vai a lógica para enviar o ID do vídeo para a API
-        //
-        //================================================================================================
+
+
+
+
+        // ============================================================
+
+
+        
       } else {
         toast.warn("URL inválida do YouTube. Por favor, tente novamente.", {
           position: "top-right",
@@ -85,7 +96,6 @@ const InputBar = () => {
     }
   };
 
-  // Função para capturar a tecla Enter
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSend();
@@ -111,7 +121,7 @@ const InputBar = () => {
               width={24}
               height={24}
               alt="Send Icon"
-            ></Image>
+            />
           </button>
         </div>
       </div>

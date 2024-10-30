@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# YouTube Quiz App
 
-## Getting Started
+Este é um projeto de um **Quiz App** baseado em perguntas de múltipla escolha e verdadeiro/falso, desenvolvido utilizando **Next.js** e **Tailwind CSS**. O aplicativo permite aos usuários inserir um link de vídeo do YouTube e responder às perguntas de um quiz baseado no vídeo enviado.
 
-First, run the development server:
+## Funcionalidades
+
+- **Validação de URL do YouTube**: O usuário pode inserir uma URL do YouTube, que é validada antes de prosseguir.
+- **Quiz interativo**: Perguntas de múltipla escolha e verdadeiro/falso, com feedback visual sobre a resposta correta.
+  
+## Tecnologias utilizadas
+
+- [**Next.js**](https://nextjs.org/) - Framework React para renderização no lado do servidor e geração de sites estáticos.
+- [**Tailwind CSS**](https://tailwindcss.com/) - Framework CSS utilitário para estilização rápida.
+- [**TypeScript**](https://www.typescriptlang.org/) - Superset de JavaScript que adiciona tipagem estática.
+
+## Como rodar o projeto
+Siga os passos abaixo para rodar o projeto localmente:
+
+#### Clone o repositório:
+
+```bash
+git clone https://github.com/seu-usuario/quiz-app.git
+```
+#### Navegue até o diretório do projeto:
+
+```bash
+cd quiz-app
+```
+#### Instale as dependências:
+
+Certifique-se de ter o Node.js instalado e, em seguida, execute:
+
+```bash
+npm install
+```
+#### Rodando o servidor de desenvolvimento:
+
+Para iniciar o servidor de desenvolvimento, execute o comando abaixo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+O aplicativo estará disponível em http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Como usar
+Na página inicial, insira uma URL de vídeo válida do YouTube na barra de input.\
+Após a validação bem-sucedida, o quiz será exibido.\
+Responda às perguntas e envie suas respostas.\
+O feedback visual indicará se as respostas estão corretas ou não.\
+Use o botão "Voltar" para retornar à barra de input e reiniciar o processo.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Melhorias futuras
+- Suporte a diferentes tipos de quiz e mais categorias de perguntas.
+- Armazenamento do progresso e pontuação do usuário.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Licença
+Este projeto é licenciado sob a MIT License.
