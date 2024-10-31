@@ -68,8 +68,8 @@ const TrueFalseQuestion = ({
       </div>
 
       <div className="space-y-2">
-        {["Verdadeiro", "Falso"].map((option, index) => {
-          const isCorrect = index === question.correctAnswer;
+        {["Falso", "Verdadeiro"].map((option, index) => {
+          const isCorrect = index ===  question.correctAnswer;
           const isSelected = selectedOption === index;
 
           return (
