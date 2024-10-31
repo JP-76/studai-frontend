@@ -19,12 +19,12 @@ Siga os passos abaixo para rodar o projeto localmente:
 #### Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/quiz-app.git
+git clone https://github.com/JP-76/studai-frontend.git
 ```
 #### Navegue até o diretório do projeto:
 
 ```bash
-cd quiz-app
+cd studai-frontend
 ```
 #### Instale as dependências:
 

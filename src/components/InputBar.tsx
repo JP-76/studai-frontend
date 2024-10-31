@@ -4,9 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+
+
+const quantQuestions = 10;
+
+const apiUrl = process.env.NEXT_PUBLIC_GPT_URL;
+
 
 interface InputBarProps {
   onSubmit: () => void; // Função que será chamada ao enviar o input
+  handleQuiz: (quiz: any) => void; // TODO !!!!!!! ADICIONAR UMA INTERFACE !!!!!!!!!!!
 }
 
 // Função para validar a URL do YouTube
@@ -29,7 +37,7 @@ const extractYouTubeVideoID = (url: string): string | null => {
   return match ? match[1] : null;
 };
 
-const InputBar = ({ onSubmit }: InputBarProps) => {
+const InputBar = ({ onSubmit, handleQuiz }: InputBarProps) => {
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,26 +57,13 @@ const InputBar = ({ onSubmit }: InputBarProps) => {
         //! Aqui precisa ir o código de envio do videoID para a API
         //! Pode salvar o quiz retornado em variável local para pegar no componente ParentComponent
 
-        //! Isso aqui pode sair depois, foi só para testar
-        console.log("URL válida do YouTube:", inputValue);
-        console.log("ID do vídeo:", videoID);
-        toast.success("URL válida do Youtube!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        const quiz = await axios.post(`${apiUrl}/quiz?videoId=${videoID}&questions=${quantQuestions}`)
+              .then((quiz) => {
+                handleQuiz(quiz.data)
+                console.log(quiz.data);
+              });
 
-
-
-
-        // ============================================================
-
-
+        
         
       } else {
         toast.warn("URL inválida do YouTube. Por favor, tente novamente.", {

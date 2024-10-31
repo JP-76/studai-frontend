@@ -4,7 +4,22 @@ import { useState } from "react";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import TrueFalseQuestion from "./TrueFalseQuestion";
 
-const ParentComponent = () => {
+interface quizDataInterface {
+    quiz: {
+      title: string,
+    description: string,
+    questions: {
+        questionType: "TRUE_OR_FALSE" | "MULTIPLE_CHOICE",
+        statement: string,
+        hint: string,
+        explanation: string,
+        correctAnswer: number,
+        options: string[]
+    }[],
+  }
+}
+
+const ParentComponent = ({quiz}: quizDataInterface) => {
   const [answers, setAnswers] = useState<boolean[]>([]); // Estado para armazenar as respostas
   const [showResults, setShowResults] = useState(false); // Estado para controlar a exibição das respostas
   const [selectedOptions, setSelectedOptions] = useState<(number | null)[]>([]); // Estado para armazenar as opções selecionadas
@@ -15,60 +30,8 @@ const ParentComponent = () => {
   //! Fácil se tiver salvo em variável local no InputBar.tsx
 
   // Dados de exemplo das perguntas
-  const questionsData = [
-    {
-      questionType: "MULTIPLE_CHOICE",
-      statement: "Qual é a capital da Alemanha?",
-      hint: "É também a maior cidade do país.",
-      explanation: "A capital da Alemanha é Berlim.",
-      correctAnswer: 0,
-      options: ["Berlim", "Munique", "Frankfurt", "Hamburgo"],
-    },
-    {
-      questionType: "MULTIPLE_CHOICE",
-      statement: "Qual é o maior planeta do sistema solar?",
-      hint: "Ele é conhecido por suas grandes tempestades.",
-      explanation: "Júpiter é o maior planeta do sistema solar.",
-      correctAnswer: 2,
-      options: ["Marte", "Terra", "Júpiter", "Saturno"],
-    },
-    {
-      questionType: "MULTIPLE_CHOICE",
-      statement: "Quem escreveu 'Dom Casmurro'?",
-      hint: "Ele é um autor famoso do Realismo brasileiro.",
-      explanation: "Machado de Assis escreveu 'Dom Casmurro'.",
-      correctAnswer: 1,
-      options: [
-        "José de Alencar",
-        "Machado de Assis",
-        "Érico Veríssimo",
-        "Clarice Lispector",
-      ],
-    },
-    {
-      questionType: "TRUE_FALSE",
-      statement: "A água ferve a 100 graus Celsius ao nível do mar.",
-      hint: "Pense sobre o que acontece quando você ferve água.",
-      explanation: "Sim, a água ferve a 100 graus Celsius ao nível do mar.",
-      correctAnswer: 0,
-    },
-    {
-      questionType: "TRUE_FALSE",
-      statement: "Os seres humanos têm três pulmões.",
-      hint: "Quantos pulmões você acha que temos?",
-      explanation: "Falso, os seres humanos têm dois pulmões.",
-      correctAnswer: 1,
-    },
-    {
-      questionType: "TRUE_FALSE",
-      statement: "A Austrália é o único país que é também um continente.",
-      hint: "É uma informação geográfica interessante.",
-      explanation:
-        "Verdadeiro, a Austrália é o único país que também é um continente.",
-      correctAnswer: 0,
-    },
-  ];
-
+  const questionsData = quiz.questions;
+ 
   // Função para lidar com a seleção de resposta
   const handleAnswerSelection = (isCorrect: boolean, questionIndex: number) => {
     setAnswers((prevAnswers) => {
@@ -119,7 +82,7 @@ const ParentComponent = () => {
               />
             </div>
           );
-        } else if (question.questionType === "TRUE_FALSE") {
+        } else if (question.questionType === "TRUE_OR_FALSE") {
           return (
             <div className={questionSpacing} key={index}>
               <TrueFalseQuestion
