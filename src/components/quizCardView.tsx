@@ -1,14 +1,7 @@
+import Quiz from '../types/quiz';
+
 interface QuizProps { 
-  quiz: {
-    title: string;
-    videoLink: string;
-    questionCount: string
-    score: string
-    timeSpent: string
-    createdAt: string
-    editedAt: string
-    takenAt: string
-  }
+  quiz: Quiz
 }
 
 const QuizCardView = ({ quiz } : QuizProps) => {
