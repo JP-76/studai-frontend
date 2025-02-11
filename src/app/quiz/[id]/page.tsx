@@ -19,7 +19,7 @@ const mockQuizzes = {
     title: "Quiz de Matemática",
     description: "Desafie-se com questões matemáticas básicas e avançadas.",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=abc1234",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
@@ -44,7 +44,8 @@ const mockQuizzes = {
         questionType: "TRUE_FALSE",
         statement: "O número π (pi) é um número racional.",
         hint: "Ele tem infinitas casas decimais e não pode ser escrito como fração.",
-        explanation: "O número π é irracional, pois não pode ser expresso como fração exata.",
+        explanation:
+          "O número π é irracional, pois não pode ser expresso como fração exata.",
         correctAnswer: 1, // Falso
       },
     ],
@@ -54,14 +55,15 @@ const mockQuizzes = {
     title: "Quiz de História",
     description: "Teste seus conhecimentos sobre a história do mundo.",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=xyz5678",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
         questionType: "MULTIPLE_CHOICE",
         statement: "Em que ano ocorreu a Revolução Francesa?",
         hint: "Foi no final do século XVIII.",
-        explanation: "A Revolução Francesa começou em 1789 e teve grande impacto na política europeia.",
+        explanation:
+          "A Revolução Francesa começou em 1789 e teve grande impacto na política europeia.",
         correctAnswer: 0,
         options: ["1789", "1815", "1600"],
       },
@@ -70,7 +72,8 @@ const mockQuizzes = {
         questionType: "MULTIPLE_CHOICE",
         statement: "Quem foi o primeiro presidente dos Estados Unidos?",
         hint: "Ele aparece na nota de um dólar.",
-        explanation: "George Washington foi o primeiro presidente dos EUA, governando de 1789 a 1797.",
+        explanation:
+          "George Washington foi o primeiro presidente dos EUA, governando de 1789 a 1797.",
         correctAnswer: 1,
         options: ["Abraham Lincoln", "George Washington", "Thomas Jefferson"],
       },
@@ -79,7 +82,8 @@ const mockQuizzes = {
         questionType: "TRUE_FALSE",
         statement: "A Primeira Guerra Mundial começou em 1914.",
         hint: "Foi causada pelo assassinato do arquiduque Francisco Ferdinando.",
-        explanation: "A Primeira Guerra Mundial começou em 1914, após o assassinato do arquiduque austríaco.",
+        explanation:
+          "A Primeira Guerra Mundial começou em 1914, após o assassinato do arquiduque austríaco.",
         correctAnswer: 0, // Verdadeiro
       },
     ],
@@ -87,16 +91,18 @@ const mockQuizzes = {
   "3": {
     id: "3",
     title: "Quiz de Ciências",
-    description: "Vamos testar seus conhecimentos sobre biologia, química e física!",
+    description:
+      "Vamos testar seus conhecimentos sobre biologia, química e física!",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=science123",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
         questionType: "MULTIPLE_CHOICE",
         statement: "Qual gás as plantas absorvem durante a fotossíntese?",
         hint: "É um gás que nós exalamos ao respirar.",
-        explanation: "As plantas absorvem dióxido de carbono (CO₂) e liberam oxigênio (O₂).",
+        explanation:
+          "As plantas absorvem dióxido de carbono (CO₂) e liberam oxigênio (O₂).",
         correctAnswer: 2,
         options: ["Oxigênio", "Nitrogênio", "Dióxido de carbono"],
       },
@@ -105,7 +111,8 @@ const mockQuizzes = {
         questionType: "TRUE_FALSE",
         statement: "A água ferve a 100°C ao nível do mar.",
         hint: "Esse é um dos pontos físicos fundamentais da água.",
-        explanation: "A água realmente ferve a 100°C ao nível do mar, mas esse ponto pode variar com a altitude.",
+        explanation:
+          "A água realmente ferve a 100°C ao nível do mar, mas esse ponto pode variar com a altitude.",
         correctAnswer: 0, // Verdadeiro
       },
     ],
@@ -122,7 +129,8 @@ const mockQuizzes = {
         questionType: "MULTIPLE_CHOICE",
         statement: "Quem é considerado o fundador da Microsoft?",
         hint: "Ele também criou a Fundação Bill & Melinda Gates.",
-        explanation: "Bill Gates fundou a Microsoft em 1975, junto com Paul Allen.",
+        explanation:
+          "Bill Gates fundou a Microsoft em 1975, junto com Paul Allen.",
         correctAnswer: 1,
         options: ["Steve Jobs", "Bill Gates", "Mark Zuckerberg"],
       },
@@ -139,9 +147,10 @@ const mockQuizzes = {
   "5": {
     id: "5",
     title: "Quiz de Geografia",
-    description: "Teste seus conhecimentos sobre países, capitais e características geográficas!",
+    description:
+      "Teste seus conhecimentos sobre países, capitais e características geográficas!",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=geoquiz123",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
@@ -166,7 +175,8 @@ const mockQuizzes = {
         questionType: "TRUE_FALSE",
         statement: "A Amazônia é o maior deserto do mundo.",
         hint: "A Amazônia é uma floresta tropical, não um deserto.",
-        explanation: "A Amazônia é uma floresta tropical, e não um deserto. O maior deserto é o Saara.",
+        explanation:
+          "A Amazônia é uma floresta tropical, e não um deserto. O maior deserto é o Saara.",
         correctAnswer: 1, // Falso
       },
     ],
@@ -176,7 +186,7 @@ const mockQuizzes = {
     title: "Quiz de Esportes",
     description: "Desafie seus conhecimentos sobre esportes e atletas!",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=sportsquiz123",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
@@ -208,7 +218,6 @@ const mockQuizzes = {
   },
 };
 
-
 const QuizPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const quiz = mockQuizzes[params.id];
@@ -236,7 +245,9 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
 
   // Extraímos o ID do vídeo do YouTube
   const videoId = extractYouTubeVideoId(quiz.sourceUri);
-  const videoThumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '';
+  const videoThumbnail = videoId
+    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+    : "";
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-white">
@@ -251,9 +262,6 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
               className="mb-4 rounded"
             />
           )}
-          
-          <h1 className="text-2xl font-bold">{quiz.title}</h1>
-          <p className="mt-2 text-gray-300">{quiz.description}</p>
 
           {/* Link para vídeo do YouTube */}
           {quiz.sourceType === "YOUTUBE_VIDEO" && quiz.sourceUri && (
@@ -266,6 +274,9 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
               Assista ao vídeo 🎥
             </a>
           )}
+
+          <h1 className="text-2xl font-bold">{quiz.title}</h1>
+          <p className="mt-2 text-gray-300">{quiz.description}</p>
         </div>
 
         {/* Botão de voltar */}
