@@ -6,27 +6,44 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
-
 const quizzes = [
   {
+    id: '1',
     title: 'Quiz 1',
-    videoLink: 'dQw4w9WgXcQ',
-    questionCount: '10',
-    score: '80',
-    timeSpent: '10m',
-    createdAt: '2023-01-01',
-    editedAt: '2023-01-02',
-    takenAt: '2023-01-03'
+    description: 'Descrição do Quiz 1',
+    questions: [],
+    sourceType: 'YouTube',
+    sourceUri: 'dQw4w9WgXcQ',
+    userId: 'user1',
+    attempts: [
+      {
+        id: 'attempt1',
+        quizId: '1',
+        userId: 'user1',
+        score: 80,
+        completionDate: '2023-01-01',
+        timeSpent: 10,
+      }
+    ]
   },
   {
+    id: '2',
     title: 'Quiz 2',
-    videoLink: 'eYq7WapuDLU',
-    questionCount: '15',
-    score: '90',
-    timeSpent: '15m',
-    createdAt: '2023-02-01',
-    editedAt: '2023-02-02',
-    takenAt: '2023-02-03'
+    description: 'Descrição do Quiz 2',
+    questions: [],
+    sourceType: 'YouTube',
+    sourceUri: 'eYq7WapuDLU',
+    userId: 'user2',
+    attempts: [
+      {
+        id: 'attempt2',
+        quizId: '2',
+        userId: 'user2',
+        score: 90,
+        completionDate: '2023-02-01',
+        timeSpent: 15,
+      }
+    ]
   }
 ];
 
