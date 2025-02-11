@@ -6,6 +6,10 @@ interface QuizGridViewProps {
 }
 
 const QuizGridView = ({ quizzes }: QuizGridViewProps) => {
+  if(quizzes.length === 0) {
+    return <div className='text-xl h-full pt-60' style={{ color: '#6C6C7B' }}>Nenhum quiz encontrado</div>;
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {quizzes.map((quiz, index) => (
