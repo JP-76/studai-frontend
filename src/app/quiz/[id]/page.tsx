@@ -115,7 +115,7 @@ const mockQuizzes = {
     title: "Quiz de Tecnologia",
     description: "Veja se você está atualizado no mundo da tecnologia!",
     sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=technews123",
+    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
     questions: [
       {
         id: "q1",
