@@ -136,7 +136,78 @@ const mockQuizzes = {
       },
     ],
   },
+  "5": {
+    id: "5",
+    title: "Quiz de Geografia",
+    description: "Teste seus conhecimentos sobre países, capitais e características geográficas!",
+    sourceType: "YOUTUBE_VIDEO",
+    sourceUri: "https://www.youtube.com/watch?v=geoquiz123",
+    questions: [
+      {
+        id: "q1",
+        questionType: "MULTIPLE_CHOICE",
+        statement: "Qual é a capital da França?",
+        hint: "É uma cidade famosa pela Torre Eiffel.",
+        explanation: "A capital da França é Paris.",
+        correctAnswer: 0,
+        options: ["Paris", "Londres", "Berlim"],
+      },
+      {
+        id: "q2",
+        questionType: "MULTIPLE_CHOICE",
+        statement: "Qual é o maior continente do mundo?",
+        hint: "É o continente onde se encontra a China.",
+        explanation: "O maior continente do mundo é a Ásia.",
+        correctAnswer: 2,
+        options: ["África", "América", "Ásia"],
+      },
+      {
+        id: "q3",
+        questionType: "TRUE_FALSE",
+        statement: "A Amazônia é o maior deserto do mundo.",
+        hint: "A Amazônia é uma floresta tropical, não um deserto.",
+        explanation: "A Amazônia é uma floresta tropical, e não um deserto. O maior deserto é o Saara.",
+        correctAnswer: 1, // Falso
+      },
+    ],
+  },
+  "6": {
+    id: "6",
+    title: "Quiz de Esportes",
+    description: "Desafie seus conhecimentos sobre esportes e atletas!",
+    sourceType: "YOUTUBE_VIDEO",
+    sourceUri: "https://www.youtube.com/watch?v=sportsquiz123",
+    questions: [
+      {
+        id: "q1",
+        questionType: "MULTIPLE_CHOICE",
+        statement: "Quem ganhou a Copa do Mundo de 2014?",
+        hint: "A final foi entre Alemanha e Argentina.",
+        explanation: "A Alemanha ganhou a Copa do Mundo de 2014.",
+        correctAnswer: 0,
+        options: ["Alemanha", "Brasil", "Argentina"],
+      },
+      {
+        id: "q2",
+        questionType: "MULTIPLE_CHOICE",
+        statement: "Qual é o atleta mais rápido do mundo?",
+        hint: "Ele é conhecido como o 'relâmpago' e vem da Jamaica.",
+        explanation: "Usain Bolt é o atleta mais rápido do mundo.",
+        correctAnswer: 1,
+        options: ["Michael Phelps", "Usain Bolt", "Cristiano Ronaldo"],
+      },
+      {
+        id: "q3",
+        questionType: "TRUE_FALSE",
+        statement: "O futebol foi inventado no Brasil.",
+        hint: "O futebol moderno tem origem na Inglaterra.",
+        explanation: "O futebol foi inventado na Inglaterra, e não no Brasil.",
+        correctAnswer: 1, // Falso
+      },
+    ],
+  },
 };
+
 
 const QuizPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
