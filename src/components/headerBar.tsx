@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const HeaderBar = () => {
+const HeaderBar = ({ bgColor }: {bgColor: string}) => {
   const router = useRouter();
 
   const handleLogoClick = () => {
@@ -13,7 +13,7 @@ const HeaderBar = () => {
   };
 
   return (
-    <div className="navbar place-content-between px-8 py-3">
+    <div className={`navbar fixed top-0 left-0 w-full place-content-between px-8 py-3 bg-[#${bgColor}] z-50`}>
       <div onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
         <Image
           src="/studaiLogo.png"
