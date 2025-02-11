@@ -9,7 +9,7 @@ const QuizCardView = ({ quiz } : QuizProps) => {
   const router = useRouter();
 
   const handleDetailsClick = () => {
-    router.push(`/quiz-detalhes/${quiz.videoLink}`);
+    router.push(`/quiz/${quiz.id}`);
   };
 
   return (
@@ -25,22 +25,22 @@ const QuizCardView = ({ quiz } : QuizProps) => {
     <div className="card-body p-2">
       <div className="grid grid-cols-10 gap-2">
         <div className='col-span-6 h-24 p-2'>
-          <p className='text-xs'>Video original: <a href={`https://www.youtube.com/watch?v=${quiz.videoLink}`} target="_blank" rel="noopener noreferrer" className='link link-hover'>{quiz.videoLink}</a></p>
-          <p className='text-xs'>Número de Questões: {quiz.questionCount}</p>
+          <p className='text-xs'>Video original: <a href={`https://www.youtube.com/watch?v=${quiz.sourceUri}`} target="_blank" rel="noopener noreferrer" className='link link-hover'>{quiz.sourceUri}</a></p>
+          <p className='text-xs'>Número de Questões: {quiz.questions.length}</p>
         </div>
         <div className='col-span-4 h-24 p-2 flex flex-col items-center justify-center'>
           <p className='text-xs'>Pontuação:</p>
-          <p className='text-xl text-green-500'>{quiz.score}</p>
+          <p className='text-xl text-green-500'>{quiz.attempts.length > 0 ? quiz.attempts[0].score : 'N/A'}</p>
           <p className='text-xs' style={{ color: '#6C6C7B' }}>Tempo gasto:</p>
-          <p className='text-xs' style={{ color: '#6C6C7B' }}>{quiz.timeSpent}</p>
+          <p className='text-xs' style={{ color: '#6C6C7B' }}>{quiz.attempts.length > 0 ? `${quiz.attempts[0].timeSpent}m` : 'N/A'}</p>
         </div>
         <div className='col-span-6 p-2'>
-          <p className='text-xs' style={{ color: '#6C6C7B' }}>Criado em: {quiz.createdAt}</p>
-          <p className='text-xs' style={{ color: '#6C6C7B' }}>Editado em: {quiz.editedAt}</p>
+          <p className='text-xs' style={{ color: '#6C6C7B' }}>Criado em: {quiz.attempts.length > 0 ? quiz.attempts[0].completionDate : 'N/A'}</p>
+          <p className='text-xs' style={{ color: '#6C6C7B' }}>Editado em: {quiz.attempts.length > 0 ? quiz.attempts[0].completionDate : 'N/A'}</p>
         </div>
         <div className='col-span-4 p-2 flex flex-col items-center justify-center'>
           <p className='text-xs' style={{ color: '#6C6C7B' }}>Realizado em:</p>
-          <p className='text-xs' style={{ color: '#6C6C7B' }}>{quiz.takenAt}</p>
+          <p className='text-xs' style={{ color: '#6C6C7B' }}>{quiz.attempts.length > 0 ? quiz.attempts[0].completionDate : 'N/A'}</p>
         </div>
       </div>
     </div>

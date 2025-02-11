@@ -25,8 +25,8 @@ const HeaderBar = ({ bgColor }: {bgColor: string}) => {
       <div onClick={handleUserClick} style={{ cursor: 'pointer' }}>
         <Image
           src="/user.svg"
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           alt="user icon"
         />
       </div>

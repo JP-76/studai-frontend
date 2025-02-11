@@ -9,14 +9,23 @@ jest.mock('next/navigation', () => ({
 }));
 
 const quiz = {
+  id: '1',
   title: 'Quiz 1',
-  videoLink: 'dQw4w9WgXcQ',
-  questionCount: '10',
-  score: '80',
-  timeSpent: '10m',
-  createdAt: '2023-01-01',
-  editedAt: '2023-01-02',
-  takenAt: '2023-01-03'
+  description: 'Descrição do Quiz 1',
+  questions: [],
+  sourceType: 'YouTube',
+  sourceUri: 'dQw4w9WgXcQ',
+  userId: 'user1',
+  attempts: [
+    {
+      id: 'attempt1',
+      quizId: '1',
+      userId: 'user1',
+      score: 80,
+      completionDate: '2023-01-01',
+      timeSpent: 10,
+    }
+  ]
 };
 
 describe('QuizCardView Component', () => {
@@ -26,16 +35,16 @@ describe('QuizCardView Component', () => {
     expect(screen.getByText(quiz.title)).toBeInTheDocument();
     expect(screen.getByText('Video original:')).toBeInTheDocument();
     expect(screen.getByText((content, element) => {
-      return element.tagName.toLowerCase() === 'a' && content.includes(quiz.videoLink);
+      return element.tagName.toLowerCase() === 'a' && content.includes(quiz.sourceUri);
     })).toBeInTheDocument();
-    expect(screen.getByText(`Número de Questões: ${quiz.questionCount}`)).toBeInTheDocument();
-    expect(screen.getByText(quiz.score)).toBeInTheDocument();
+    expect(screen.getByText(`Número de Questões: ${quiz.questions.length}`)).toBeInTheDocument();
+    expect(screen.getByText(quiz.attempts[0].score.toString())).toBeInTheDocument();
     expect(screen.getByText('Tempo gasto:')).toBeInTheDocument();
-    expect(screen.getByText(quiz.timeSpent)).toBeInTheDocument();
-    expect(screen.getByText(`Criado em: ${quiz.createdAt}`)).toBeInTheDocument();
-    expect(screen.getByText(`Editado em: ${quiz.editedAt}`)).toBeInTheDocument();
+    expect(screen.getByText(`${quiz.attempts[0].timeSpent}m`)).toBeInTheDocument();
+    expect(screen.getByText(`Criado em: ${quiz.attempts[0].completionDate}`)).toBeInTheDocument();
+    expect(screen.getByText(`Editado em: ${quiz.attempts[0].completionDate}`)).toBeInTheDocument();
     expect(screen.getByText('Realizado em:')).toBeInTheDocument();
-    expect(screen.getByText(quiz.takenAt)).toBeInTheDocument();
+    expect(screen.getByText(quiz.attempts[0].completionDate)).toBeInTheDocument();
   });
 
   it('navega para a página de detalhes ao clicar no link de detalhes', () => {
@@ -47,13 +56,13 @@ describe('QuizCardView Component', () => {
     const detailsLink = screen.getByText('Detalhes');
     fireEvent.click(detailsLink);
 
-    expect(push).toHaveBeenCalledWith(`/quiz-detalhes/${quiz.videoLink}`);
+    expect(push).toHaveBeenCalledWith(`/quiz/${quiz.id}`);
   });
 
   it('verifica se o link do vídeo original está presente e se possui o atributo href correto', () => {
     render(<QuizCardView quiz={quiz} />);
     
-    const videoLink = screen.getByText(quiz.videoLink);
-    expect(videoLink.closest('a')).toHaveAttribute('href', `https://www.youtube.com/watch?v=${quiz.videoLink}`);
+    const videoLink = screen.getByText(quiz.sourceUri);
+    expect(videoLink.closest('a')).toHaveAttribute('href', `https://www.youtube.com/watch?v=${quiz.sourceUri}`);
   });
 });
