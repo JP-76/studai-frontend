@@ -9,5 +9,5 @@ export default interface Quiz {
   sourceType: string;
   sourceUri: string;
   userId: string;
-  attempts: Attempt[];
+  attempts: Attempt[] | null;
 }
