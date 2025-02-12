@@ -36,140 +36,20 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const mockQuiz = {
-    id: "1",
-    title: "Quiz de Matemática",
-    description: "Desafie-se com questões matemáticas básicas e avançadas.",
-    sourceType: "YOUTUBE_VIDEO",
-    sourceUri: "https://www.youtube.com/watch?v=gg_tFb2ohx4",
-    questions: [
-      {
-        id: "q1",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Quanto é 5 + 3?",
-        hint: "Pense em quantos dedos você tem em uma mão e adicione três.",
-        explanation: "5 + 3 é igual a 8.",
-        correctAnswer: 2,
-        options: ["6", "7", "8"],
-      },
-      {
-        id: "q2",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Qual é a raiz quadrada de 16?",
-        hint: "Um número multiplicado por ele mesmo dá 16.",
-        explanation: "A raiz quadrada de 16 é 4.",
-        correctAnswer: 1,
-        options: ["3", "4", "5"],
-      },
-      {
-        id: "q3",
-        questionType: "TRUE_FALSE",
-        statement: "O número π (pi) é um número racional.",
-        hint: "Ele tem infinitas casas decimais e não pode ser escrito como fração.",
-        explanation:
-          "O número π é irracional, pois não pode ser expresso como fração exata.",
-        correctAnswer: 1, // Falso
-      },
-      {
-        id: "q4",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Quanto é 5 + 3?",
-        hint: "Pense em quantos dedos você tem em uma mão e adicione três.",
-        explanation: "5 + 3 é igual a 8.",
-        correctAnswer: 2,
-        options: ["6", "7", "8"],
-      },
-      {
-        id: "q5",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Qual é a raiz quadrada de 16?",
-        hint: "Um número multiplicado por ele mesmo dá 16.",
-        explanation: "A raiz quadrada de 16 é 4.",
-        correctAnswer: 1,
-        options: ["3", "4", "5"],
-      },
-      {
-        id: "q6",
-        questionType: "TRUE_FALSE",
-        statement: "O número π (pi) é um número racional.",
-        hint: "Ele tem infinitas casas decimais e não pode ser escrito como fração.",
-        explanation:
-          "O número π é irracional, pois não pode ser expresso como fração exata.",
-        correctAnswer: 1, // Falso
-      },
-      {
-        id: "q7",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Quanto é 5 + 3?",
-        hint: "Pense em quantos dedos você tem em uma mão e adicione três.",
-        explanation: "5 + 3 é igual a 8.",
-        correctAnswer: 2,
-        options: ["6", "7", "8"],
-      },
-      {
-        id: "q8",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Qual é a raiz quadrada de 16?",
-        hint: "Um número multiplicado por ele mesmo dá 16.",
-        explanation: "A raiz quadrada de 16 é 4.",
-        correctAnswer: 1,
-        options: ["3", "4", "5"],
-      },
-      {
-        id: "q9",
-        questionType: "TRUE_FALSE",
-        statement: "O número π (pi) é um número racional.",
-        hint: "Ele tem infinitas casas decimais e não pode ser escrito como fração.",
-        explanation:
-          "O número π é irracional, pois não pode ser expresso como fração exata.",
-        correctAnswer: 1, // Falso
-      },
-      {
-        id: "q10",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Quanto é 5 + 3?",
-        hint: "Pense em quantos dedos você tem em uma mão e adicione três.",
-        explanation: "5 + 3 é igual a 8.",
-        correctAnswer: 2,
-        options: ["6", "7", "8"],
-      },
-      {
-        id: "q11",
-        questionType: "MULTIPLE_CHOICE",
-        statement: "Qual é a raiz quadrada de 16?",
-        hint: "Um número multiplicado por ele mesmo dá 16.",
-        explanation: "A raiz quadrada de 16 é 4.",
-        correctAnswer: 1,
-        options: ["3", "4", "5"],
-      },
-      {
-        id: "q12",
-        questionType: "TRUE_FALSE",
-        statement: "O número π (pi) é um número racional.",
-        hint: "Ele tem infinitas casas decimais e não pode ser escrito como fração.",
-        explanation:
-          "O número π é irracional, pois não pode ser expresso como fração exata.",
-        correctAnswer: 1, // Falso
-      },
-    ],
-    attempts: [
-      { date: "2025-02-10 14:30", scorePercentage: 80 },
-      { date: "2025-02-09 11:45", scorePercentage: 40 },
-      { date: "2025-02-08 16:20", scorePercentage: 100 },
-      { date: "2025-02-07 19:00", scorePercentage: 60 },
-      { date: "2025-02-06 10:00", scorePercentage: 90 },
-    ],
-  };
-
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        setTimeout(() => {
-          setQuiz(mockQuiz); // Definindo o mock de quiz
-          setLoading(false);
-        }, 1000); // Delay de 1 segundo
+        const response = await fetch(`/api/quiz/${params.id}`);
+        if (!response.ok) throw new Error("Falha ao buscar quiz");
+        const data: Quiz = await response.json();
+        const updatedQuestions = data.questions.map((question) => ({
+          ...question,
+          options: question.options || [],
+        }));
+        setQuiz({ ...data, questions: updatedQuestions });
       } catch (err) {
-        setError("Falha ao buscar quiz");
+        setError(err instanceof Error ? err.message : "Erro desconhecido");
+      } finally {
         setLoading(false);
       }
     };
