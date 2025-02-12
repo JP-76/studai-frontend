@@ -1,5 +1,3 @@
-// TrueFalseQuestion.tsx
-
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -48,8 +46,15 @@ const TrueFalseQuestion = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (isSubmitted && selectedOption !== null) {
+      const isCorrect = selectedOption === question.correctAnswer;
+      onAnswerSelection(isCorrect);
+    }
+  }, [isSubmitted, selectedOption, question.correctAnswer, onAnswerSelection]);
+
   return (
-    <div className="p-4 bg-[#12121B] rounded-xl w-full max-w-[600px] relative mb-4"> {/* Adicionei margin-bottom */}
+    <div className="p-4 bg-[#12121B] rounded-xl w-full max-w-[600px] relative mb-4">
       <div className="flex justify-between items-center">
         <h2 className="text-white text-xl font-bold mb-2">{question.statement}</h2>
         <div className="relative" ref={hintRef}>
@@ -75,23 +80,22 @@ const TrueFalseQuestion = ({
           return (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 10 }} // Animação inicial
-              animate={{ opacity: 1, y: 0 }} // Animação ao aparecer
-              exit={{ opacity: 0, y: -10 }} // Animação ao sair
-              transition={{ duration: 0.3 }} // Duração da animação
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
               className={`flex items-center p-2 rounded-md cursor-pointer transition-colors ${
                 isSubmitted
                   ? isCorrect
-                    ? "bg-green-500 text-white" // Cor verde para a resposta correta
+                    ? "bg-green-500 text-white"
                     : isSelected
-                    ? "bg-red-500 text-white" // Cor vermelha para a resposta errada
+                    ? "bg-red-500 text-white"
                     : "bg-gray-800 text-gray-300"
                   : "bg-gray-800 text-gray-300"
               }`}
               onClick={() => {
                 if (!isSubmitted) {
                   onOptionSelect(index);
-                  onAnswerSelection(isCorrect);
                 }
               }}
             >
