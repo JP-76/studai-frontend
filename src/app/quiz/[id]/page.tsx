@@ -4,25 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import MultipleChoiceQuestion from "@/components/MultipleChoiceQuestion";
 import TrueFalseQuestion from "@/components/TrueFalseQuestion";
-
-interface Question {
-  id: string;
-  questionType: "MULTIPLE_CHOICE" | "TRUE_FALSE";
-  statement: string;
-  hint: string;
-  explanation: string;
-  correctAnswer: number;
-  options: string[];
-}
-
-interface Quiz {
-  id: string;
-  title: string;
-  description: string;
-  sourceType: "YOUTUBE_VIDEO" | "OTHER";
-  sourceUri: string;
-  questions: Question[];
-}
+import Quiz from "@/types/quiz";
 
 const extractYouTubeVideoId = (url: string): string | null => {
   const regex =
@@ -47,7 +29,7 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
         const response = await fetch(`/api/quiz/${params.id}`);
         if (!response.ok) throw new Error("Falha ao buscar quiz");
         const data: Quiz = await response.json();
-        const updatedQuestions = data.questions.map((question) => ({
+        const updatedQuestions = (data.questions || []).map((question) => ({
           ...question,
           options: question.options || [],
         }));
@@ -72,7 +54,7 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
 
   const handleSubmit = () => {
     const correctCount =
-      quiz?.questions.reduce((count, question, index) => {
+      quiz?.questions?.reduce((count, question, index) => {
         return (
           count + (selectedOptions[index] === question.correctAnswer ? 1 : 0)
         );
@@ -133,7 +115,7 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
   const videoThumbnail = videoId
     ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
     : null;
-  const accuracyPercentage = ((correctAnswers / quiz.questions.length) * 100).toFixed(2);
+  const accuracyPercentage = quiz?.questions ? ((correctAnswers / quiz.questions.length) * 100).toFixed(2) : "0.00";
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-white">
@@ -168,7 +150,7 @@ const QuizPage = ({ params }: { params: { id: string } }) => {
       </aside>
 
       <main className="ml-96 p-8 w-full">
-        {quiz.questions.map((question, index) => (
+        {quiz.questions && quiz.questions.map((question, index) => (
           <div key={question.id} className="mb-6">
             {question.questionType === "MULTIPLE_CHOICE" ? (
               <MultipleChoiceQuestion

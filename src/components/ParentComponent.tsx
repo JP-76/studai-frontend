@@ -3,23 +3,9 @@
 import { useState } from "react";
 import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import TrueFalseQuestion from "./TrueFalseQuestion";
+import Quiz from "@/types/quiz";
 
-interface quizDataInterface {
-    quiz: {
-      title: string,
-    description: string,
-    questions: {
-        questionType: "TRUE_OR_FALSE" | "MULTIPLE_CHOICE",
-        statement: string,
-        hint: string,
-        explanation: string,
-        correctAnswer: number,
-        options: string[]
-    }[],
-  }
-}
-
-const ParentComponent = ({quiz}: quizDataInterface) => {
+const ParentComponent = ({quiz}: {quiz: Quiz}) => {
   const [answers, setAnswers] = useState<boolean[]>([]); // Estado para armazenar as respostas
   const [showResults, setShowResults] = useState(false); // Estado para controlar a exibição das respostas
   const [selectedOptions, setSelectedOptions] = useState<(number | null)[]>([]); // Estado para armazenar as opções selecionadas
@@ -62,7 +48,7 @@ const ParentComponent = ({quiz}: quizDataInterface) => {
 
   return (
     <div className="p-4">
-      {questionsData.map((question, index) => {
+      {questionsData && questionsData.map((question, index) => {
         const questionSpacing = "mb-4"; // Classe para margem inferior
 
         if (question.questionType === "MULTIPLE_CHOICE" && question.options) {

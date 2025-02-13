@@ -3,15 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FiHelpCircle } from "react-icons/fi";
 import { motion } from "framer-motion"; // Importando framer-motion
-
-// Interface para a estrutura da questão
-interface Question {
-  questionType: string;
-  statement: string;
-  hint: string;
-  explanation: string;
-  correctAnswer: number; // 0 para Verdadeiro, 1 para Falso
-}
+import Question from "@/types/question";
 
 interface TrueFalseQuestionProps {
   question: Question;

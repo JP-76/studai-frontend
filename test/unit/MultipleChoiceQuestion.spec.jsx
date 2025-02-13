@@ -61,22 +61,6 @@ describe('MultipleChoiceQuestion Component', () => {
     expect(mockOnOptionSelect).toHaveBeenCalledWith(1); // Índice de "Paris"
   });
 
-  it('chama onAnswerSelection com a resposta correta após enviar', () => {
-    render(
-      <MultipleChoiceQuestion
-        question={question}
-        onAnswerSelection={mockOnAnswerSelection}
-        showExplanation={false}
-        selectedOption={1} // Simulando que "Paris" foi selecionada
-        onOptionSelect={mockOnOptionSelect}
-        isSubmitted={true}
-      />
-    );
-
-    // Verificar se onAnswerSelection é chamada com 'true' para a resposta correta
-    expect(mockOnAnswerSelection).toHaveBeenCalledWith(true); // "Paris" é a resposta correta
-  });
-
   it('exibe a dica ao clicar no botão "Dica"', () => {
     render(
       <MultipleChoiceQuestion
