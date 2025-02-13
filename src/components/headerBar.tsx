@@ -5,7 +5,7 @@ const HeaderBar = ({ bgColor }: {bgColor: string}) => {
   const router = useRouter();
 
   const handleLogoClick = () => {
-    router.push('/');
+    router.push('/quiz');
   };
 
   const handleUserClick = () => {

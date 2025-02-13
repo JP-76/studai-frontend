@@ -43,7 +43,7 @@ export default function AuthPage() {
 
         if (response.ok) {
           // Set the JWT in a cookie
-          document.cookie = `token=${data}; path=/;`;
+          document.cookie = `auth_token=${data}; path=/;`;
           console.log('Login successful:', data);
           handleQuizNavigation();
         } else {

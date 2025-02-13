@@ -33,7 +33,7 @@ export default function UserInfoPage() {
 
 
   useEffect(() => {
-    const token = getCookie('token');
+    const token = getCookie('auth_token');
     console.log(token);
 
     if (token) {
@@ -72,7 +72,7 @@ export default function UserInfoPage() {
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const token = getCookie('token');
+    const token = getCookie('auth_token');
 
     // Update username
     fetch('/api/user/username', {
@@ -120,7 +120,7 @@ export default function UserInfoPage() {
   const handleChangePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const token = getCookie('token');
+    const token = getCookie('auth_token');
 
     if (newPassword !== confirmNewPassword) {
       alert('Passwords do not match');
@@ -148,7 +148,7 @@ export default function UserInfoPage() {
   };
 
   const handleDeleteAccount = () => {
-    const token = getCookie('token');
+    const token = getCookie('auth_token');
 
     fetch('/api/user', {
       method: 'DELETE',
@@ -165,7 +165,7 @@ export default function UserInfoPage() {
   };
 
   const handleGoBack = () => {
-    router.push('/'); // Replace with the actual path to the main page
+    router.push('/quiz'); // Replace with the actual path to the main page
   };
 
   return (
