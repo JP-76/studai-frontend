@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { FiHelpCircle } from "react-icons/fi";
-import { motion } from "framer-motion"; // Importando framer-motion
+import { motion } from "framer-motion";
 import Question from "@/types/question";
 
 interface TrueFalseQuestionProps {

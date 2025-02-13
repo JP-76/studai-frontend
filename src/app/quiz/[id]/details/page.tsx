@@ -5,13 +5,6 @@ import { useRouter } from "next/navigation";
 import QuestionDisplay from "@/components/QuestionDisplay";
 import Quiz from "@/types/quiz";
 
-const extractYouTubeVideoId = (url: string): string | null => {
-  const regex =
-    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-};
-
 const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -40,7 +33,7 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-[#232336] text-white">
         <div className="text-center">
           <p className="text-xl mb-4">Carregando detalhes do quiz...</p>
         </div>
@@ -50,7 +43,7 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
 
   if (!quiz) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-[#232336] text-white">
         <div className="text-center">
           <p className="text-xl mb-4">Quiz não encontrado.</p>
           <p className="text-gray-400 mb-6">
@@ -70,7 +63,7 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-[#232336] text-white">
         <div className="text-center">
           <p className="text-xl mb-4">Erro: {error}</p>
           <button
@@ -84,13 +77,13 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
     );
   }
 
-  const videoId = extractYouTubeVideoId(quiz.sourceUri);
+  const videoId = quiz.sourceUri;
   const videoThumbnail = videoId
     ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
     : null;
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-white">
+    <div className="flex min-h-screen bg-[#232336] text-white">
       <aside className="w-96 bg-gray-800 p-6 flex flex-col justify-between fixed h-full">
         <div>
           {videoThumbnail && (
