@@ -5,7 +5,7 @@ export default interface Quiz {
   id: string;
   title: string;
   description: string;
-  questions: Question[];
+  questions: Question[] | null;
   sourceType: string;
   sourceUri: string;
   userId: string;
