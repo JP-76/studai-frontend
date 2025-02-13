@@ -29,13 +29,11 @@ const EditQuizPage = () => {
 
         const data: Quiz = await response.json();
 
-        // Se não houver quiz ou o objeto vier vazio
         if (!data || !data.id) {
           setError("Quiz não encontrado.");
           return;
         }
 
-        // Garantir que as perguntas tenham um array vazio para as opções, caso não existam
         const updatedQuestions = data.questions ? data.questions.map((question) => ({
           ...question,
           options: question.options || [],
@@ -101,8 +99,7 @@ const EditQuizPage = () => {
   const handleSave = async () => {
     try {
       console.log("Quiz salvo:", quiz);
-      // Aqui você pode adicionar lógica para salvar as alterações no quiz
-      // router.push("/quiz");
+      router.push("/quiz");
     } catch (err) {
       setError("Falha ao salvar quiz");
     }
