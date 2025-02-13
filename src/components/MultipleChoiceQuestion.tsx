@@ -2,15 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-
-interface Question {
-  questionType: string;
-  statement: string;
-  hint: string;
-  explanation: string;
-  correctAnswer: number;
-  options: string[];
-}
+import Question from "@/types/question";
 
 interface MultipleChoiceQuestionProps {
   question: Question;

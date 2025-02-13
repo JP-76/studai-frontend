@@ -4,20 +4,14 @@ import InputBar from "@/components/InputBar";
 import ParentComponent from "@/components/ParentComponent";
 import ReturnButton from "@/components/ReturnButton";
 import LogoImage from "@/components/LogoImage";
+import Quiz from "@/types/quiz";
 
-interface quizDataInterface {
-  title: string,
-  description: string,
-  questions: {
-      questionType: "TRUE_OR_FALSE" | "MULTIPLE_CHOICE",
-      statement: string,
-      hint: string,
-      explanation: string,
-      correctAnswer: number,
-      options: string[]
-  }[],
-}
-const defaultQuizValue = {
+const defaultQuizValue: Quiz = {
+  "id": "",
+  "sourceType": "",
+  "sourceUri": "",
+  "userId": "",
+  "attempts": [],
   "title": "",
   "description": "",
   "questions": [],
@@ -25,7 +19,7 @@ const defaultQuizValue = {
 
 export default function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false); // Estado para controlar a submissão
-  const [quiz, setQuiz] = useState<quizDataInterface>(defaultQuizValue);
+  const [quiz, setQuiz] = useState<Quiz>(defaultQuizValue);
 
 
   // Função que será chamada ao enviar o input

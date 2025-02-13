@@ -1,11 +1,7 @@
 import QuizCardView from './quizCardView';
 import Quiz from '../types/quiz';
 
-interface QuizGridViewProps {
-  quizzes: Quiz[];
-}
-
-const QuizGridView = ({ quizzes }: QuizGridViewProps) => {
+const QuizGridView = ({ quizzes }: { quizzes: Quiz[]}) => {
   if(quizzes.length === 0) {
     return <div className='text-xl h-full pt-60' style={{ color: '#6C6C7B' }}>Nenhum quiz encontrado</div>;
   }

@@ -1,15 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-interface Question {
-  questionType: string;
-  statement: string;
-  hint: string;
-  explanation: string;
-  correctAnswer: number;
-  options: string[];
-}
+import Question from "@/types/question";
 
 interface QuestionDisplayProps {
   question: Question;
@@ -41,7 +33,7 @@ const QuestionDisplay = ({ question, showExplanation }: QuestionDisplayProps) =>
           })}
         </div>
       );
-    } else if (question.questionType === "TRUE_FALSE") {
+    } else if (question.questionType === "TRUE_OR_FALSE") {
       return (
         <div className="space-y-2">
           {["Verdadeiro", "Falso"].map((option, index) => {

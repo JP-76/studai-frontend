@@ -3,25 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import QuestionDisplay from "@/components/QuestionDisplay";
-
-interface Question {
-  id: string;
-  questionType: "MULTIPLE_CHOICE" | "TRUE_FALSE";
-  statement: string;
-  options: string[];
-  hint?: string;
-  explanation?: string;
-  correctAnswer?: number;
-}
-
-interface Quiz {
-  id: string;
-  title: string;
-  description: string;
-  sourceUri: string;
-  questions: Question[];
-  attempts: { date: string; success: boolean }[]; // Mock data for attempts
-}
+import Quiz from "@/types/quiz";
 
 const extractYouTubeVideoId = (url: string): string | null => {
   const regex =
@@ -42,10 +24,10 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
         const response = await fetch(`/api/quiz/${params.id}`);
         if (!response.ok) throw new Error("Falha ao buscar quiz");
         const data: Quiz = await response.json();
-        const updatedQuestions = data.questions.map((question) => ({
+        const updatedQuestions = data.questions ? data.questions.map((question) => ({
           ...question,
           options: question.options || [],
-        }));
+        })) : [];
         setQuiz({ ...data, questions: updatedQuestions });
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro desconhecido");
@@ -121,36 +103,36 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
           <h1 className="mt-4 text-2xl font-bold">{quiz.title}</h1>
           <p className="mt-2 text-gray-300">{quiz.description}</p>
           <p className="mt-2 text-gray-300">
-            <strong>{quiz.questions.length}</strong> questões
+            <strong>{quiz.questions ? quiz.questions.length : 0}</strong> questões
           </p>
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-white">
               Últimas Tentativas:
             </h2>
             <ul className="text-gray-300 mt-2 space-y-2">
-              {quiz.attempts.slice(0, 5).map((attempt, index) => (
+              {quiz.attempts && quiz.attempts.slice(0, 5).map((attempt, index) => (
                 <li key={index} className="flex justify-between">
-                  <span>Data: {attempt.date}</span>
+                  <span>Data: {new Date(attempt.completionDate).toLocaleDateString('pt-BR')}</span>
                   <span
                     className={`font-bold
                               ${
-                                attempt.scorePercentage >= 80
+                                attempt.score >= 80
                                   ? "text-green-500"
                                   : ""
                               }
                               ${
-                                attempt.scorePercentage >= 50 &&
-                                attempt.scorePercentage < 80
+                                attempt.score >= 50 &&
+                                attempt.score < 80
                                   ? "text-yellow-500"
                                   : ""
                               }
                               ${
-                                attempt.scorePercentage < 50
+                                attempt.score < 50
                                   ? "text-red-500"
                                   : ""
                               }`}
                   >
-                    {attempt.scorePercentage}%
+                    {attempt.score}%
                   </span>
                 </li>
               ))}
@@ -177,7 +159,7 @@ const QuizDetailsPage = ({ params }: { params: { id: string } }) => {
       <main className="ml-96 p-8 w-full max-w-[60rem] mx-auto">
         <h2 className="text-xl font-semibold mb-4">Questões:</h2>
         <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-2">
-          {quiz.questions.map((question) => (
+          {quiz.questions && quiz.questions.map((question) => (
             <div key={question.id} className="mb-4">
               <QuestionDisplay question={question} showExplanation={true} />
             </div>
