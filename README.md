@@ -1,57 +1,69 @@
-# YouTube Quiz App
+# React + TypeScript + Vite
 
-Este é um projeto de um **Quiz App** baseado em perguntas de múltipla escolha e verdadeiro/falso, desenvolvido utilizando **Next.js** e **Tailwind CSS**. O aplicativo permite aos usuários inserir um link de vídeo do YouTube e responder às perguntas de um quiz baseado no vídeo enviado.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Funcionalidades
+Currently, two official plugins are available:
 
-- **Validação de URL do YouTube**: O usuário pode inserir uma URL do YouTube, que é validada antes de prosseguir.
-- **Quiz interativo**: Perguntas de múltipla escolha e verdadeiro/falso, com feedback visual sobre a resposta correta.
-  
-## Tecnologias utilizadas
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- [**Next.js**](https://nextjs.org/) - Framework React para renderização no lado do servidor e geração de sites estáticos.
-- [**Tailwind CSS**](https://tailwindcss.com/) - Framework CSS utilitário para estilização rápida.
-- [**TypeScript**](https://www.typescriptlang.org/) - Superset de JavaScript que adiciona tipagem estática.
+## Expanding the ESLint configuration
 
-## Como rodar o projeto
-Siga os passos abaixo para rodar o projeto localmente:
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-#### Clone o repositório:
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-```bash
-git clone https://github.com/JP-76/studai-frontend.git
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-#### Navegue até o diretório do projeto:
 
-```bash
-cd studai-frontend
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-#### Instale as dependências:
-
-Certifique-se de ter o Node.js instalado e, em seguida, execute:
-
-```bash
-npm install
-```
-#### Rodando o servidor de desenvolvimento:
-
-Para iniciar o servidor de desenvolvimento, execute o comando abaixo:
-
-```bash
-npm run dev
-```
-O aplicativo estará disponível em http://localhost:3000.
-
-## Como usar
-Na página inicial, insira uma URL de vídeo válida do YouTube na barra de input.\
-Após a validação bem-sucedida, o quiz será exibido.\
-Responda às perguntas e envie suas respostas.\
-O feedback visual indicará se as respostas estão corretas ou não.\
-Use o botão "Voltar" para retornar à barra de input e reiniciar o processo.
-
-## Melhorias futuras
-- Suporte a diferentes tipos de quiz e mais categorias de perguntas.
-- Armazenamento do progresso e pontuação do usuário.
-
-## Licença
-Este projeto é licenciado sob a MIT License.
