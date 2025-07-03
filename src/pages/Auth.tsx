@@ -14,7 +14,7 @@ import type { RegisterRequest } from '../types/register-request';
 import api from '../lib/axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -31,7 +31,12 @@ const AuthPage = () => {
     const [usernameTouched, setUsernameTouched] = useState(false);
     const [emailTouched, setEmailTouched] = useState(false);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = (location.state && 'from' in location.state && location.state.from && 'pathname' in location.state.from)
+        ? location.state.from.pathname
+        : '/home';
+
 
     const handleUsernameChange = (value: string) => {
         setUsername(value);
@@ -111,7 +116,7 @@ const AuthPage = () => {
                 });
 
                 toast.success('Login successful!');
-                navigate('/');
+                navigate(from, { replace: true });
             } else {
                 toast.error('Invalid credentials. Please try again.');
             }
@@ -281,7 +286,7 @@ const AuthPage = () => {
                         <label className="text-base-content/60 flex items-center gap-2 text-xs">
                             <input
                                 type="checkbox"
-                                className="toggle toggle-xs"
+                                className="toggle toggle-xs toggle-primary"
                                 checked={acceptedTerms}
                                 onChange={e => setAcceptedTerms(e.target.checked)}
                             />
