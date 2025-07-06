@@ -1,11 +1,12 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import { isAuthenticated } from './lib/axios';
-import { useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { isAuthenticated } from "./lib/axios";
+import { useEffect, useState } from "react";
 
-import LandingPage from './pages/LandingPage';
-import Home from './pages/Home';
-import Auth from './pages/Auth';
+import LandingPage from "./pages/LandingPage";
+import Home from "./pages/Home";
+import Auth from "./pages/Auth";
+import QuizPage from "./pages/QuizPage";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -33,11 +34,17 @@ function ProtectedRoute({ children, excludePaths = [] }: ProtectedRouteProps) {
       }
     }
     checkAuth();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [location.pathname, isExcluded]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Checking authentication...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Checking authentication...
+      </div>
+    );
   }
   if (!valid) {
     return <Navigate to="/auth" replace state={{ from: location }} />;
@@ -60,6 +67,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/quiz/:id"
+          element={
+            <ProtectedRoute excludePaths={["/quiz/:id"]}>
+              <QuizPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/quiz/:id/visitor" element={<QuizPage />} />
       </Routes>
     </>
   );
