@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   FaCheck,
-  FaTimes,
   FaUser,
   FaShare,
   FaArrowLeft,
@@ -351,7 +350,7 @@ function QuizPage() {
                       isCurrent
                         ? "btn-primary"
                         : isAnswered
-                        ? "btn-success"
+                        ? "btn-outline bg-primary/10 border border-primary"
                         : "btn-outline"
                     }`}
                     onClick={() => setCurrentQuestion(index)}
@@ -434,7 +433,6 @@ function QuizPage() {
                           }
                         />
                         <span className="flex-1">Verdadeiro</span>
-                        <FaCheck className="text-success" />
                       </div>
                     </div>
                   </label>
@@ -457,7 +455,6 @@ function QuizPage() {
                           }
                         />
                         <span className="flex-1">Falso</span>
-                        <FaTimes className="text-error" />
                       </div>
                     </div>
                   </label>
