@@ -30,13 +30,7 @@ function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [visitorName, setVisitorName] = useState("");
   const [nameSet, setNameSet] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [results, setResults] = useState<{
-    score: number;
-    correct: number;
-    incorrect: number;
-    total: number;
-  } | null>(null);
+
   const [showHints, setShowHints] = useState<boolean[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
 
@@ -136,9 +130,16 @@ function QuizPage() {
       };
 
       const response = await api.post("/v1/quiz/submit", payload);
-      setResults(response.data);
-      setSubmitted(true);
       toast.success("Quiz finalizado com sucesso!");
+      
+      // Navigate to results page with quiz and attempt data
+      navigate(`/quiz/${quiz.id}/results`, {
+        state: { 
+          quiz: quiz,
+          attempt: response.data 
+        },
+        replace: true
+      });
     } catch {
       toast.error("Erro ao enviar respostas");
     }
@@ -242,55 +243,7 @@ function QuizPage() {
     );
   }
 
-  // Results screen
-  if (submitted && results) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body text-center">
-              <div className="text-6xl mb-4">
-                {results.score > 70 ? "🎉" : results.score > 50 ? "👍" : "💪"}
-              </div>
-              <h2 className="text-3xl font-bold mb-2">Quiz Finalizado!</h2>
-              <p className="text-xl text-base-content/70 mb-6">
-                Sua pontuação: {results.score}%
-              </p>
 
-              <div className="stats shadow mb-6">
-                <div className="stat">
-                  <div className="stat-title">Acertos</div>
-                  <div className="stat-value text-success">
-                    {results.correct}
-                  </div>
-                </div>
-                <div className="stat">
-                  <div className="stat-title">Erros</div>
-                  <div className="stat-value text-error">
-                    {results.incorrect}
-                  </div>
-                </div>
-                <div className="stat">
-                  <div className="stat-title">Total</div>
-                  <div className="stat-value">{results.total}</div>
-                </div>
-              </div>
-
-              <div className="card-actions justify-center">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => navigate("/home")}
-                >
-                  <FaArrowLeft />
-                  Voltar ao início
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const currentQ = quiz?.questions[currentQuestion];
 
