@@ -30,9 +30,13 @@ function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [visitorName, setVisitorName] = useState("");
   const [nameSet, setNameSet] = useState(false);
+  const [username, setUsername] = useState("");
 
   const [showHints, setShowHints] = useState<boolean[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [timeSpent, setTimeSpent] = useState<number>(0);
+  const [liveElapsed, setLiveElapsed] = useState<number>(0);
 
   useEffect(() => {
     const loadQuizData = async () => {
@@ -99,6 +103,39 @@ function QuizPage() {
     }
   }, [isVisitorRoute]);
 
+  useEffect(() => {
+    // Fetch username for logged-in users
+    const fetchUsername = async () => {
+      if (!isVisitorRoute) {
+        try {
+          const response = await api.get("/v1/me");
+          setUsername(response.data.username);
+        } catch {
+          // Optionally handle error (e.g., redirect to login)
+        }
+      }
+    };
+    fetchUsername();
+  }, [isVisitorRoute]);
+
+  useEffect(() => {
+    if (!loading && quiz) {
+      setStartTime(Date.now());
+    }
+  }, [loading, quiz]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (!loading && quiz && startTime) {
+      interval = setInterval(() => {
+        setLiveElapsed(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [loading, quiz, startTime]);
+
   const handleAnswerChange = (questionId: string, answer: string) => {
     setAnswers((prev) =>
       prev.map((a) =>
@@ -122,23 +159,36 @@ function QuizPage() {
       return;
     }
 
-    try {
-      const payload = {
-        quizId: quiz.id,
-        answers: answers,
-        ...(isVisitorRoute && visitorName && { visitorName }),
-      };
+    // Convert answers array to object { [questionId]: selectedAnswer }
+    const answersObject = answers.reduce((acc, curr) => {
+      acc[curr.questionId] = curr.selectedAnswer;
+      return acc;
+    }, {} as Record<string, string>);
 
-      const response = await api.post("/v1/quiz/submit", payload);
+    const endTime = Date.now();
+    const elapsed = startTime ? Math.floor((endTime - startTime) / 1000) : 0; // in seconds
+    setTimeSpent(elapsed);
+
+    const payload = {
+      quizId: quiz.id,
+      timeSpent: elapsed,
+      guestName: isVisitorRoute ? visitorName : username,
+      answers: answersObject,
+    };
+
+    // Select endpoint based on user type
+    const endpoint = isVisitorRoute ? "/v1/guest/quiz/attempt" : "/v1/quiz/attempt";
+
+    try {
+      const response = await api.post(endpoint, payload);
       toast.success("Quiz finalizado com sucesso!");
-      
       // Navigate to results page with quiz and attempt data
-      navigate(`/quiz/${quiz.id}/results`, {
-        state: { 
+      navigate(`/quiz/${quiz.id}/results/${response.data.id}`, {
+        state: {
           quiz: quiz,
-          attempt: response.data 
+          attempt: response.data,
         },
-        replace: true
+        replace: true,
       });
     } catch {
       toast.error("Erro ao enviar respostas");
@@ -165,6 +215,12 @@ function QuizPage() {
   const getQuestionProgress = () => {
     const answered = answers.filter((a) => a.selectedAnswer).length;
     return `${answered}/${quiz?.questions.length || 0}`;
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   };
 
   if (loading) {
@@ -263,8 +319,8 @@ function QuizPage() {
                 )}
               </div>
               <div className="text-right">
-                <div className="text-sm text-base-content/70">Progresso</div>
-                <div className="text-lg font-bold">{getQuestionProgress()}</div>
+                <div className="text-sm text-base-content/70">Tempo</div>
+                <div className="text-lg font-bold">{formatTime(liveElapsed)}</div>
               </div>
             </div>
 
@@ -371,7 +427,7 @@ function QuizPage() {
                   <label className="cursor-pointer">
                     <div
                       className={`card ${
-                        isAnswerSelected(currentQuestion, "true")
+                        isAnswerSelected(currentQuestion, "True")
                           ? "bg-primary/10 border-2 border-primary"
                           : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
                       } transition-colors duration-150`}
@@ -381,9 +437,9 @@ function QuizPage() {
                           type="radio"
                           name={`question-${currentQ.id}`}
                           className="radio radio-primary mr-3"
-                          checked={isAnswerSelected(currentQuestion, "true")}
+                          checked={isAnswerSelected(currentQuestion, "True")}
                           onChange={() =>
-                            handleAnswerChange(currentQ.id, "true")
+                            handleAnswerChange(currentQ.id, "True")
                           }
                         />
                         <span className="flex-1">Verdadeiro</span>
@@ -394,7 +450,7 @@ function QuizPage() {
                   <label className="cursor-pointer">
                     <div
                       className={`card ${
-                        isAnswerSelected(currentQuestion, "false")
+                        isAnswerSelected(currentQuestion, "False")
                           ? "bg-primary/10 border-2 border-primary"
                           : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
                       } transition-colors duration-150`}
@@ -404,9 +460,9 @@ function QuizPage() {
                           type="radio"
                           name={`question-${currentQ.id}`}
                           className="radio radio-primary mr-3"
-                          checked={isAnswerSelected(currentQuestion, "false")}
+                          checked={isAnswerSelected(currentQuestion, "False")}
                           onChange={() =>
-                            handleAnswerChange(currentQ.id, "false")
+                            handleAnswerChange(currentQ.id, "False")
                           }
                         />
                         <span className="flex-1">Falso</span>

@@ -21,7 +21,7 @@ import api from "../lib/axios";
 import type { Quiz, QuizAttemptDTO } from "../types/quiz";
 
 function QuizResults() {
-  const { id } = useParams<{ id: string }>();
+  const { quizId, attemptId } = useParams<{ quizId: string; attemptId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,10 +29,11 @@ function QuizResults() {
   const [attempt, setAttempt] = useState<QuizAttemptDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const loadResults = async () => {
-      if (!id) {
+      if (!quizId || !attemptId) {
         navigate("/home");
         return;
       }
@@ -49,10 +50,14 @@ function QuizResults() {
           return;
         }
 
-        // If not in state, fetch from API
-        const response = await api.get(`/v1/quiz/${id}/attempt`);
-        setAttempt(response.data.attempt);
-        setQuiz(response.data.quiz);
+        // Fetch attempt by ID using the new endpoint
+        const response = await api.get(`/v1/quiz/attempt/${attemptId}`);
+        setAttempt(response.data);
+        // Fetch quiz data if not included in the response
+        if (response.data.quizId) {
+          const quizResponse = await api.get(`/v1/quiz/${quizId}`);
+          setQuiz(quizResponse.data);
+        }
       } catch (error) {
         console.error("Error loading results:", error);
         toast.error("Erro ao carregar resultados");
@@ -63,24 +68,39 @@ function QuizResults() {
     };
 
     loadResults();
-  }, [id, navigate, location.state]);
+  }, [quizId, attemptId, navigate, location.state]);
+
+  useEffect(() => {
+    // Fetch username for logged-in users
+    const fetchUsername = async () => {
+      if (attempt && !attempt.guestUser) {
+        try {
+          const response = await api.get("/v1/me");
+          setUsername(response.data.username);
+        } catch {
+          // Optionally handle error
+        }
+      }
+    };
+    fetchUsername();
+  }, [attempt]);
 
   const getPerformanceLevel = (score: number) => {
-    if (score >= 90) return "excellent";
-    if (score >= 75) return "good";
-    if (score >= 60) return "average";
-    return "needs_improvement";
+    if (score >= 90) return "Excelente!";
+    if (score >= 75) return "Ótimo";
+    if (score >= 60) return "Bom";
+    return "Pode melhorar";
   };
 
   const getPerformanceColor = (level: string) => {
     switch (level) {
-      case "excellent":
+      case "Excelente!":
         return "text-success";
-      case "good":
+      case "Ótimo":
         return "text-primary";
-      case "average":
+      case "Bom":
         return "text-warning";
-      case "needs_improvement":
+      case "Pode melhorar":
         return "text-error";
       default:
         return "text-base-content";
@@ -89,13 +109,13 @@ function QuizResults() {
 
   const getPerformanceIcon = (level: string) => {
     switch (level) {
-      case "excellent":
+      case "Excelente!":
         return <FaTrophy className="text-6xl text-success" />;
-      case "good":
+      case "Ótimo":
         return <FaMedal className="text-6xl text-primary" />;
-      case "average":
+      case "Bom":
         return <FaStar className="text-6xl text-warning" />;
-      case "needs_improvement":
+      case "Pode melhorar":
         return <FaAward className="text-6xl text-error" />;
       default:
         return <FaChartLine className="text-6xl text-base-content" />;
@@ -104,13 +124,13 @@ function QuizResults() {
 
   const getPerformanceMessage = (level: string) => {
     switch (level) {
-      case "excellent":
+      case "Excelente!":
         return "Parabéns! Você demonstrou excelente conhecimento!";
-      case "good":
+      case "Ótimo":
         return "Muito bem! Você tem um bom domínio do assunto!";
-      case "average":
+      case "Bom":
         return "Bom trabalho! Continue estudando para melhorar!";
-      case "needs_improvement":
+      case "Pode melhorar":
         return "Continue praticando! O conhecimento vem com a prática!";
       default:
         return "Obrigado por participar do quiz!";
@@ -119,25 +139,25 @@ function QuizResults() {
 
   const getRecommendations = (level: string) => {
     switch (level) {
-      case "excellent":
+      case "Excelente!":
         return [
           "Continue explorando tópicos avançados",
           "Ajude outros estudantes com suas dúvidas",
           "Tente quizzes mais desafiadores"
         ];
-      case "good":
+      case "Ótimo":
         return [
           "Revise os tópicos onde você errou",
           "Pratique mais para alcançar a excelência",
           "Explore recursos adicionais de estudo"
         ];
-      case "average":
+      case "Bom":
         return [
           "Dedique mais tempo aos estudos",
           "Revise os conceitos fundamentais",
           "Faça mais quizzes sobre o mesmo tema"
         ];
-      case "needs_improvement":
+      case "Pode melhorar":
         return [
           "Estude os conceitos básicos primeiro",
           "Pratique com quizzes mais simples",
@@ -180,14 +200,14 @@ function QuizResults() {
   };
 
   const handleCopyLink = () => {
-    const resultsUrl = `${window.location.origin}/quiz/${id}/results`;
+    const resultsUrl = `${window.location.origin}/quiz/${quizId}/results`;
     navigator.clipboard.writeText(resultsUrl);
     toast.success("Link dos resultados copiado!");
     setShowShareModal(false);
   };
 
   const handleRetakeQuiz = () => {
-    navigate(`/quiz/${id}`);
+    navigate(`/quiz/${quizId}`);
   };
 
   if (loading) {
@@ -236,10 +256,11 @@ function QuizResults() {
             <div className="flex items-center justify-center gap-2 mt-4 text-sm text-base-content/60">
               <FaUser />
               <span>
-                {attempt.guestUser 
+                {attempt.guestUser
                   ? `Visitante: ${attempt.guestName || 'Anônimo'}`
-                  : 'Usuário Logado'
-                }
+                  : username
+                    ? `Usuário: ${username}`
+                    : 'Usuário Logado'}
               </span>
             </div>
             
@@ -359,21 +380,29 @@ function QuizResults() {
               Revisão das Respostas
             </h3>
             <div className="space-y-3">
-              {attempt.answers.map((answer, index) => (
-                <div key={answer.id} className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    answer.correct ? 'bg-success text-success-content' : 'bg-error text-error-content'
-                  }`}>
-                    {answer.correct ? <FaCheckCircle /> : <FaTimesCircle />}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium">Questão {index + 1}</div>
-                    <div className="text-sm text-base-content/70">
-                      Sua resposta: {answer.answer}
+              {attempt.answers.map((answer, index) => {
+                const question = quiz.questions.find(q => q.id === answer.questionId);
+                return (
+                  <div key={answer.id} className="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-base-200 rounded-lg">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      answer.correct ? 'bg-success text-success-content' : 'bg-error text-error-content'
+                    }`}>
+                      {answer.correct ? <FaCheckCircle /> : <FaTimesCircle />}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium mb-1">{question ? question.statement : `Questão ${index + 1}`}</div>
+                      <div className="text-sm text-base-content/70">
+                        Sua resposta: {question && question.questionType === "TRUE_OR_FALSE" ? (answer.answer === "true" ? "True" : answer.answer === "false" ? "False" : answer.answer) : answer.answer}
+                      </div>
+                      {!answer.correct && question && (
+                        <div className="text-sm text-error mt-1">
+                          Resposta correta: {question.questionType === "TRUE_OR_FALSE" ? (question.correctAnswer === "true" ? "True" : question.correctAnswer === "false" ? "False" : question.correctAnswer) : question.correctAnswer}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -414,41 +443,10 @@ function QuizResults() {
                 <FaRedo />
                 Refazer Quiz
               </button>
-              <button
-                className="btn btn-outline"
-                onClick={handleShareResults}
-              >
-                <FaShare />
-                Compartilhar
-              </button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Share Modal */}
-      {showShareModal && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">Compartilhar Resultados</h3>
-            <p className="mb-4">
-              Compartilhe seus resultados com amigos e familiares!
-            </p>
-            <div className="modal-action">
-              <button className="btn btn-primary" onClick={handleCopyLink}>
-                <FaCopy />
-                Copiar Link
-              </button>
-              <button
-                className="btn"
-                onClick={() => setShowShareModal(false)}
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

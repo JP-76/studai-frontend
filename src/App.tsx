@@ -78,7 +78,7 @@ function App() {
         />
         <Route path="/quiz/:id/visitor" element={<QuizPage />} />
         <Route
-          path="/quiz/:id/results"
+          path="/quiz/:quizId/results/:attemptId"
           element={
             <ProtectedRoute>
               <QuizResults />
