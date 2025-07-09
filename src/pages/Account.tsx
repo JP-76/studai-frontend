@@ -22,7 +22,7 @@ function AccountSettings() {
         setEmail(res.data.email);
       })
       .catch(() => {
-        setError("Failed to load account data");
+        setError("Falha ao carregar os dados da conta.");
         setShowModal(true);
       });
   }, []);
@@ -45,9 +45,9 @@ function AccountSettings() {
         oldPassword,
         newPassword,
       });
-      alert("Information updated successfully!");
+      alert("Informações atualizadas com sucesso!");
     } catch (err) {
-      setError("Failed to update account.");
+      setError("Falha ao atualizar a conta.");
       setShowModal(true);
     } finally {
       setLoading(false);
@@ -55,15 +55,15 @@ function AccountSettings() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete your account?")) return;
+    if (!confirm("Tem certeza que deseja excluir sua conta?")) return;
     try {
       await api.delete("/v1/me", {
         data: { password: oldPassword },
       });
-      alert("Account deleted successfully.");
+      alert("Conta excluída com sucesso.");
       navigate("/");
     } catch (err) {
-      setError("Failed to delete account.");
+      setError("Falha ao excluir a conta.");
       setShowModal(true);
     }
   };
@@ -76,18 +76,18 @@ function AccountSettings() {
             className="absolute left-6 top-4 btn btn-sm btn-ghost"
             onClick={() => navigate("/home")}
           >
-            <FaArrowLeft className="mr-2" /> Home
+            <FaArrowLeft className="mr-2" /> Início
           </button>
 
-          <h2 className="card-title justify-center mb-2 mt-4">Account Settings</h2>
-          <p className="text-base-content/70 mb-6">Update your information below</p>
+          <h2 className="card-title justify-center mb-2 mt-4">Configurações da Conta</h2>
+          <p className="text-base-content/70 mb-6">Atualize suas informações abaixo</p>
 
           <label className="input input-bordered flex items-center gap-2 w-full mb-4">
             <FaUser className="opacity-70" />
             <input
               type="text"
               className="grow"
-              placeholder="Username"
+              placeholder="Nome de usuário"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -109,7 +109,7 @@ function AccountSettings() {
             <input
               type={showPassword ? "text" : "password"}
               className="grow"
-              placeholder="Old Password"
+              placeholder="Senha atual"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
             />
@@ -121,7 +121,7 @@ function AccountSettings() {
               <input
                 type={showPassword ? "text" : "password"}
                 className="grow"
-                placeholder="New Password"
+                placeholder="Nova senha"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
@@ -140,19 +140,19 @@ function AccountSettings() {
             <div className="text-base-content/60 px-1 text-[0.6875rem] grid grid-cols-2 flex-wrap">
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <span className={`status inline-block ${pwd.uppercase ? 'status-success' : 'status-error'}`} />
-                At least one uppercase letter
+                Pelo menos uma letra maiúscula
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <span className={`status inline-block ${pwd.special ? 'status-success' : 'status-error'}`} />
-                At least one special character
+                Pelo menos um caractere especial
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <span className={`status inline-block ${pwd.number ? 'status-success' : 'status-error'}`} />
-                At least one number
+                Pelo menos um número
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
                 <span className={`status inline-block ${pwd.length ? 'status-success' : 'status-error'}`} />
-                At least 8 characters
+                Pelo menos 8 caracteres
               </div>
             </div>
           </div>
@@ -164,7 +164,7 @@ function AccountSettings() {
               disabled={loading}
             >
               <FaSave className="mr-2" />
-              {loading ? "Saving..." : "Save Changes"}
+              {loading ? "Salvando..." : "Salvar Alterações"}
             </button>
 
             <button
@@ -172,20 +172,20 @@ function AccountSettings() {
               onClick={handleDelete}
             >
               <FaTrash className="mr-2" />
-              Delete Account
+              Excluir Conta
             </button>
           </div>
         </div>
       </div>
 
-      {/* Error Modal */}
+      {/* Modal de Erro */}
       {showModal && (
         <dialog open className="modal modal-open">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Error</h3>
+            <h3 className="font-bold text-lg">Erro</h3>
             <p className="py-4">{error}</p>
             <div className="modal-action">
-              <button className="btn" onClick={() => setShowModal(false)}>Close</button>
+              <button className="btn" onClick={() => setShowModal(false)}>Fechar</button>
             </div>
           </div>
         </dialog>
