@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import QuizPage from "./pages/QuizPage";
 import QuizList from "./pages/QuizList";
+import QuizResults from "./pages/QuizResults";
+import QuizDetails from "./pages/QuizDetails";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -78,6 +80,22 @@ function App() {
         />
         <Route path="/quiz/:id/visitor" element={<QuizPage />} />
         <Route path="/quiz/list" element={<QuizList />} />
+        <Route
+          path="/quiz/:quizId/results/:attemptId"
+          element={
+            <ProtectedRoute>
+              <QuizResults />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quiz/:quizId/details"
+          element={
+            <ProtectedRoute>
+              <QuizDetails />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );
