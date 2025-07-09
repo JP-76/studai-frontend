@@ -63,7 +63,7 @@ function QuizList() {
           {quizzes.map((q) => (
             <div
               key={q.id}
-              className="card bg-base-100 border border-base-300 shadow-md hover:shadow-xl transition-shadow p-6"
+              className="card bg-base-100 border border-base-300 shadow-md hover:shadow-xl transition-shadow p-6 justify-between"
             >
               <h3 className="text-xl font-semibold">{q.title}</h3>
               {q.description && (
