@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import QuizPage from "./pages/QuizPage";
 import QuizResults from "./pages/QuizResults";
+import AccountSettings from "./pages/Account";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -85,6 +86,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/account" element={<AccountSettings />} />
       </Routes>
     </>
   );
