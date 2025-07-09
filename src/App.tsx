@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import QuizPage from "./pages/QuizPage";
+import QuizList from "./pages/QuizList";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -76,6 +77,7 @@ function App() {
           }
         />
         <Route path="/quiz/:id/visitor" element={<QuizPage />} />
+        <Route path="/quiz/list" element={<QuizList />} />
       </Routes>
     </>
   );
