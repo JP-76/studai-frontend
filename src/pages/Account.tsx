@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/axios";
-import { FaUser, FaEnvelope, FaLock, FaTrash, FaSave, FaArrowLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaTrash,
+  FaSave,
+  FaArrowLeft,
+} from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import Cookies from "js-cookie";
 
 function AccountSettings() {
   const [username, setUsername] = useState("");
@@ -12,14 +21,24 @@ function AccountSettings() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [originalUsername, setOriginalUsername] = useState("");
+  const [originalEmail, setOriginalEmail] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get("/v1/me")
+    api
+      .get("/v1/me")
       .then((res) => {
-        setUsername(res.data.username);
-        setEmail(res.data.email);
+        const userData = res.data;
+        setUsername(userData.username);
+        setEmail(userData.email);
+        setOriginalUsername(userData.username);
+        setOriginalEmail(userData.email);
       })
       .catch(() => {
         setError("Falha ao carregar os dados da conta.");
@@ -37,16 +56,57 @@ function AccountSettings() {
   const pwd = validatePassword(newPassword);
 
   const handleUpdate = async () => {
+    if (!oldPassword.trim()) {
+      setError("Senha atual é obrigatória para fazer alterações.");
+      setShowModal(true);
+      return;
+    }
+
     setLoading(true);
     try {
-      await api.put("/v1/me/credentials", {
-        username,
-        email,
+      const payload: {
+        oldPassword: string;
+        username?: string;
+        email?: string;
+        newPassword?: string;
+      } = {
         oldPassword,
-        newPassword,
-      });
-      alert("Informações atualizadas com sucesso!");
-    } catch (err) {
+      };
+
+      if (username !== originalUsername) {
+        payload.username = username;
+      }
+
+      if (email !== originalEmail) {
+        payload.email = email;
+      }
+
+      if (newPassword.trim()) {
+        const allValid = Object.values(pwd).every(Boolean);
+        if (!allValid) {
+          setError("A nova senha não atende aos requisitos de segurança.");
+          setShowModal(true);
+          setLoading(false);
+          return;
+        }
+        payload.newPassword = newPassword;
+      }
+
+      if (Object.keys(payload).length === 1) {
+        setError("Nenhuma alteração foi detectada.");
+        setShowModal(true);
+        setLoading(false);
+        return;
+      }
+
+      await api.put("/v1/me/credentials", payload);
+      toast.success("Informações atualizadas com sucesso!");
+
+      setOriginalUsername(username);
+      setOriginalEmail(email);
+      setOldPassword("");
+      setNewPassword("");
+    } catch {
       setError("Falha ao atualizar a conta.");
       setShowModal(true);
     } finally {
@@ -55,17 +115,31 @@ function AccountSettings() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Tem certeza que deseja excluir sua conta?")) return;
+    if (!deletePassword.trim()) {
+      setError("Senha atual é obrigatória para excluir a conta.");
+      setShowModal(true);
+      return;
+    }
+
     try {
       await api.delete("/v1/me", {
-        data: { password: oldPassword },
+        data: { password: deletePassword },
       });
-      alert("Conta excluída com sucesso.");
+      Cookies.remove("auth_token");
+      localStorage.removeItem("token");
+      toast.success("Conta excluída com sucesso.");
       navigate("/");
-    } catch (err) {
-      setError("Falha ao excluir a conta.");
+    } catch {
+      setError("Falha ao excluir a conta. Verifique se a senha está correta.");
       setShowModal(true);
     }
+    setShowDeleteModal(false);
+    setDeletePassword("");
+  };
+
+  const confirmDelete = () => {
+    setDeletePassword("");
+    setShowDeleteModal(true);
   };
 
   return (
@@ -79,8 +153,12 @@ function AccountSettings() {
             <FaArrowLeft className="mr-2" /> Início
           </button>
 
-          <h2 className="card-title justify-center mb-2 mt-4">Configurações da Conta</h2>
-          <p className="text-base-content/70 mb-6">Atualize suas informações abaixo</p>
+          <h2 className="card-title justify-center mb-2 mt-4">
+            Configurações da Conta
+          </h2>
+          <p className="text-base-content/70 mb-6">
+            Atualize suas informações abaixo
+          </p>
 
           <label className="input input-bordered flex items-center gap-2 w-full mb-4">
             <FaUser className="opacity-70" />
@@ -117,7 +195,7 @@ function AccountSettings() {
 
           <div className="flex flex-col gap-1 relative mb-4">
             <label className="input input-bordered flex items-center gap-2 w-full">
-              <FaLock className='opacity-70' />
+              <FaLock className="opacity-70" />
               <input
                 type={showPassword ? "text" : "password"}
                 className="grow"
@@ -139,19 +217,35 @@ function AccountSettings() {
             </label>
             <div className="text-base-content/60 px-1 text-[0.6875rem] grid grid-cols-2 flex-wrap">
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <span className={`status inline-block ${pwd.uppercase ? 'status-success' : 'status-error'}`} />
+                <span
+                  className={`status inline-block ${
+                    pwd.uppercase ? "status-success" : "status-error"
+                  }`}
+                />
                 Pelo menos uma letra maiúscula
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <span className={`status inline-block ${pwd.special ? 'status-success' : 'status-error'}`} />
+                <span
+                  className={`status inline-block ${
+                    pwd.special ? "status-success" : "status-error"
+                  }`}
+                />
                 Pelo menos um caractere especial
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <span className={`status inline-block ${pwd.number ? 'status-success' : 'status-error'}`} />
+                <span
+                  className={`status inline-block ${
+                    pwd.number ? "status-success" : "status-error"
+                  }`}
+                />
                 Pelo menos um número
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <span className={`status inline-block ${pwd.length ? 'status-success' : 'status-error'}`} />
+                <span
+                  className={`status inline-block ${
+                    pwd.length ? "status-success" : "status-error"
+                  }`}
+                />
                 Pelo menos 8 caracteres
               </div>
             </div>
@@ -167,16 +261,63 @@ function AccountSettings() {
               {loading ? "Salvando..." : "Salvar Alterações"}
             </button>
 
-            <button
-              className="btn btn-error w-full"
-              onClick={handleDelete}
-            >
+            <button className="btn btn-error w-full" onClick={confirmDelete}>
               <FaTrash className="mr-2" />
               Excluir Conta
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {showDeleteModal && (
+        <dialog open className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Confirmar Exclusão</h3>
+            <p className="py-4 mb-4">
+              Tem certeza que deseja excluir sua conta? Esta ação é irreversível
+              e todos os seus dados serão perdidos.
+            </p>
+
+            <div className="form-control mb-4">
+              <label className="label">
+                <span className="label-text">
+                  Digite sua senha atual para confirmar:
+                </span>
+              </label>
+              <label className="input input-bordered flex items-center gap-2 w-full">
+                <FaLock className="opacity-70" />
+                <input
+                  type="password"
+                  className="grow"
+                  placeholder="Senha atual"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <div className="modal-action">
+              <button
+                className="btn btn-error"
+                onClick={handleDelete}
+                disabled={!deletePassword.trim()}
+              >
+                Sim, Excluir Conta
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeletePassword("");
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
 
       {/* Modal de Erro */}
       {showModal && (
@@ -185,7 +326,9 @@ function AccountSettings() {
             <h3 className="font-bold text-lg">Erro</h3>
             <p className="py-4">{error}</p>
             <div className="modal-action">
-              <button className="btn" onClick={() => setShowModal(false)}>Fechar</button>
+              <button className="btn" onClick={() => setShowModal(false)}>
+                Fechar
+              </button>
             </div>
           </div>
         </dialog>

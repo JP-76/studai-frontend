@@ -411,7 +411,7 @@ function QuizPage() {
                     <label className="cursor-pointer">
                       <div
                         className={`card ${
-                          isAnswerSelected(currentQuestion, "True")
+                          isAnswerSelected(currentQuestion, "Verdadeiro")
                             ? "bg-primary/10 border-2 border-primary"
                             : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
                         } transition-colors duration-150`}
@@ -421,9 +421,9 @@ function QuizPage() {
                             type="radio"
                             name={`question-${currentQ.id}`}
                             className="radio radio-primary mr-3"
-                            checked={isAnswerSelected(currentQuestion, "True")}
+                            checked={isAnswerSelected(currentQuestion, "Verdadeiro")}
                             onChange={() =>
-                              handleAnswerChange(currentQ.id, "True")
+                              handleAnswerChange(currentQ.id, "Verdadeiro")
                             }
                           />
                           <span className="flex-1">Verdadeiro</span>
@@ -433,7 +433,7 @@ function QuizPage() {
                     <label className="cursor-pointer">
                       <div
                         className={`card ${
-                          isAnswerSelected(currentQuestion, "False")
+                          isAnswerSelected(currentQuestion, "Falso")
                             ? "bg-primary/10 border-2 border-primary"
                             : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
                         } transition-colors duration-150`}
@@ -443,9 +443,9 @@ function QuizPage() {
                             type="radio"
                             name={`question-${currentQ.id}`}
                             className="radio radio-primary mr-3"
-                            checked={isAnswerSelected(currentQuestion, "False")}
+                            checked={isAnswerSelected(currentQuestion, "Falso")}
                             onChange={() =>
-                              handleAnswerChange(currentQ.id, "False")
+                              handleAnswerChange(currentQ.id, "Falso")
                             }
                           />
                           <span className="flex-1">Falso</span>
