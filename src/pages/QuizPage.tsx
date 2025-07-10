@@ -11,6 +11,7 @@ import {
 import toast from "react-hot-toast";
 import api from "../lib/axios";
 import type { Quiz, QuizAnswer, QuizQuestion } from "../types/quiz";
+import Layout from "../components/Layout";
 
 function QuizPage() {
   const { id } = useParams<{ id: string }>();
@@ -176,7 +177,9 @@ function QuizPage() {
     };
 
     // Select endpoint based on user type
-    const endpoint = isVisitorRoute ? "/v1/guest/quiz/attempt" : "/v1/quiz/attempt";
+    const endpoint = isVisitorRoute
+      ? "/v1/guest/quiz/attempt"
+      : "/v1/quiz/attempt";
 
     try {
       const response = await api.post(endpoint, payload);
@@ -217,8 +220,10 @@ function QuizPage() {
   };
 
   const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
@@ -298,294 +303,298 @@ function QuizPage() {
     );
   }
 
-
-
   const currentQ = quiz?.questions[currentQuestion];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-2xl font-bold">{quiz.title}</h1>
-                {isVisitorRoute && visitorName && (
-                  <p className="text-base-content/70">
-                    Participante: {visitorName}
-                  </p>
-                )}
-              </div>
-              <div className="text-right">
-                <div className="text-sm text-base-content/70">Tempo</div>
-                <div className="text-lg font-bold">{formatTime(liveElapsed)}</div>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center mt-4">
-              <progress
-                className="progress progress-primary flex-1 mr-4"
-                value={answers.filter((a) => a.selectedAnswer).length}
-                max={quiz.questions.length}
-              ></progress>
-
-              {!isVisitorRoute && (
-                <button
-                  className="btn btn-outline btn-sm"
-                  onClick={handleShareQuiz}
-                  title="Compartilhar quiz com visitantes"
-                >
-                  <FaShare />
-                  Compartilhar
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Question Navigation */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {quiz.questions.map((_, index) => {
-                const isAnswered = answers[index]?.selectedAnswer;
-                const isCurrent = index === currentQuestion;
-
-                return (
-                  <button
-                    key={index}
-                    className={`btn btn-sm ${
-                      isCurrent
-                        ? "btn-primary"
-                        : isAnswered
-                        ? "btn-outline bg-primary/10 border border-primary"
-                        : "btn-outline"
-                    }`}
-                    onClick={() => setCurrentQuestion(index)}
-                  >
-                    {index + 1}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Current Question */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">
-                Questão {currentQuestion + 1}
-              </h2>
-              <div className="badge badge-outline">
-                {currentQ.questionType === "MULTIPLE_CHOICE"
-                  ? "Múltipla Escolha"
-                  : "Verdadeiro/Falso"}
-              </div>
-            </div>
-
-            <p className="text-lg mb-6">{currentQ.statement}</p>
-
-            {currentQ.hint && (
-              <div className="mb-6">
-                <button
-                  onClick={() => toggleHint(currentQuestion)}
-                  className="btn btn-outline btn-sm mb-4"
-                >
-                  <FaLightbulb className="mr-2" />
-                  {showHints[currentQuestion] ? "Ocultar Dica" : "Mostrar Dica"}
-                </button>
-                {showHints[currentQuestion] && (
-                  <div className="alert alert-info">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      className="stroke-current shrink-0 w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span>
-                      <strong>Dica:</strong> {currentQ.hint}
-                    </span>
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-2xl font-bold">{quiz.title}</h1>
+                  {isVisitorRoute && visitorName && (
+                    <p className="text-base-content/70">
+                      Participante: {visitorName}
+                    </p>
+                  )}
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-base-content/70">Tempo</div>
+                  <div className="text-lg font-bold">
+                    {formatTime(liveElapsed)}
                   </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center mt-4">
+                <progress
+                  className="progress progress-primary flex-1 mr-4"
+                  value={answers.filter((a) => a.selectedAnswer).length}
+                  max={quiz.questions.length}
+                ></progress>
+
+                {!isVisitorRoute && (
+                  <button
+                    className="btn btn-outline btn-sm"
+                    onClick={handleShareQuiz}
+                    title="Compartilhar quiz com visitantes"
+                  >
+                    <FaShare />
+                    Compartilhar
+                  </button>
                 )}
               </div>
-            )}
+            </div>
+          </div>
 
-            <div className="flex flex-col gap-2">
-              {currentQ.questionType === "TRUE_OR_FALSE" ? (
-                <>
-                  <label className="cursor-pointer">
-                    <div
-                      className={`card ${
-                        isAnswerSelected(currentQuestion, "True")
-                          ? "bg-primary/10 border-2 border-primary"
-                          : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
-                      } transition-colors duration-150`}
+          {/* Question Navigation */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <div className="flex flex-wrap gap-2 justify-center">
+                {quiz.questions.map((_, index) => {
+                  const isAnswered = answers[index]?.selectedAnswer;
+                  const isCurrent = index === currentQuestion;
+
+                  return (
+                    <button
+                      key={index}
+                      className={`btn btn-sm ${
+                        isCurrent
+                          ? "btn-primary"
+                          : isAnswered
+                          ? "btn-outline bg-primary/10 border border-primary"
+                          : "btn-outline"
+                      }`}
+                      onClick={() => setCurrentQuestion(index)}
                     >
-                      <div className="card-body flex-row items-center p-4">
-                        <input
-                          type="radio"
-                          name={`question-${currentQ.id}`}
-                          className="radio radio-primary mr-3"
-                          checked={isAnswerSelected(currentQuestion, "True")}
-                          onChange={() =>
-                            handleAnswerChange(currentQ.id, "True")
-                          }
-                        />
-                        <span className="flex-1">Verdadeiro</span>
-                      </div>
+                      {index + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Current Question */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">
+                  Questão {currentQuestion + 1}
+                </h2>
+                <div className="badge badge-outline">
+                  {currentQ.questionType === "MULTIPLE_CHOICE"
+                    ? "Múltipla Escolha"
+                    : "Verdadeiro/Falso"}
+                </div>
+              </div>
+
+              <p className="text-lg mb-6">{currentQ.statement}</p>
+
+              {currentQ.hint && (
+                <div className="mb-6">
+                  <button
+                    onClick={() => toggleHint(currentQuestion)}
+                    className="btn btn-outline btn-sm mb-4"
+                  >
+                    <FaLightbulb className="mr-2" />
+                    {showHints[currentQuestion]
+                      ? "Ocultar Dica"
+                      : "Mostrar Dica"}
+                  </button>
+                  {showHints[currentQuestion] && (
+                    <div className="alert alert-info">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="stroke-current shrink-0 w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      <span>
+                        <strong>Dica:</strong> {currentQ.hint}
+                      </span>
                     </div>
-                  </label>
-                  <label className="cursor-pointer">
-                    <div
-                      className={`card ${
-                        isAnswerSelected(currentQuestion, "False")
-                          ? "bg-primary/10 border-2 border-primary"
-                          : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
-                      } transition-colors duration-150`}
-                    >
-                      <div className="card-body flex-row items-center p-4">
-                        <input
-                          type="radio"
-                          name={`question-${currentQ.id}`}
-                          className="radio radio-primary mr-3"
-                          checked={isAnswerSelected(currentQuestion, "False")}
-                          onChange={() =>
-                            handleAnswerChange(currentQ.id, "False")
-                          }
-                        />
-                        <span className="flex-1">Falso</span>
-                      </div>
-                    </div>
-                  </label>
-                </>
-              ) : (
-                currentQ.options.map((option, optionIndex) => (
-                  <label key={optionIndex} className="cursor-pointer">
-                    <div
-                      className={`card ${
-                        isAnswerSelected(currentQuestion, option)
-                          ? "bg-primary/10 border-2 border-primary"
-                          : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
-                      } transition-colors duration-150`}
-                    >
-                      <div className="card-body flex-row items-center p-4">
-                        <input
-                          type="radio"
-                          name={`question-${currentQ.id}`}
-                          className="radio radio-primary mr-3"
-                          checked={isAnswerSelected(currentQuestion, option)}
-                          onChange={() =>
-                            handleAnswerChange(currentQ.id, option)
-                          }
-                        />
-                        <span className="flex-1">{option}</span>
-                      </div>
-                    </div>
-                  </label>
-                ))
+                  )}
+                </div>
               )}
-            </div>
-          </div>
-        </div>
 
-        {/* Navigation */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex justify-between">
-              <button
-                className="btn btn-outline"
-                disabled={currentQuestion === 0}
-                onClick={() => setCurrentQuestion((prev) => prev - 1)}
-              >
-                <FaArrowLeft />
-                Anterior
-              </button>
-
-              <div className="flex gap-2">
-                {currentQuestion === quiz.questions.length - 1 ? (
-                  <button
-                    className="btn btn-success btn-lg"
-                    onClick={handleSubmit}
-                    disabled={
-                      answers.filter((a) => a.selectedAnswer).length !==
-                      quiz.questions.length
-                    }
-                  >
-                    <FaCheck />
-                    Finalizar Quiz
-                  </button>
+              <div className="flex flex-col gap-2">
+                {currentQ.questionType === "TRUE_OR_FALSE" ? (
+                  <>
+                    <label className="cursor-pointer">
+                      <div
+                        className={`card ${
+                          isAnswerSelected(currentQuestion, "True")
+                            ? "bg-primary/10 border-2 border-primary"
+                            : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
+                        } transition-colors duration-150`}
+                      >
+                        <div className="card-body flex-row items-center p-4">
+                          <input
+                            type="radio"
+                            name={`question-${currentQ.id}`}
+                            className="radio radio-primary mr-3"
+                            checked={isAnswerSelected(currentQuestion, "True")}
+                            onChange={() =>
+                              handleAnswerChange(currentQ.id, "True")
+                            }
+                          />
+                          <span className="flex-1">Verdadeiro</span>
+                        </div>
+                      </div>
+                    </label>
+                    <label className="cursor-pointer">
+                      <div
+                        className={`card ${
+                          isAnswerSelected(currentQuestion, "False")
+                            ? "bg-primary/10 border-2 border-primary"
+                            : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
+                        } transition-colors duration-150`}
+                      >
+                        <div className="card-body flex-row items-center p-4">
+                          <input
+                            type="radio"
+                            name={`question-${currentQ.id}`}
+                            className="radio radio-primary mr-3"
+                            checked={isAnswerSelected(currentQuestion, "False")}
+                            onChange={() =>
+                              handleAnswerChange(currentQ.id, "False")
+                            }
+                          />
+                          <span className="flex-1">Falso</span>
+                        </div>
+                      </div>
+                    </label>
+                  </>
                 ) : (
-                  <button
-                    className="btn btn-primary"
-                    disabled={currentQuestion === quiz.questions.length - 1}
-                    onClick={() => setCurrentQuestion((prev) => prev + 1)}
-                  >
-                    Próxima
-                    <FaArrowLeft className="rotate-180" />
-                  </button>
+                  currentQ.options.map((option, optionIndex) => (
+                    <label key={optionIndex} className="cursor-pointer">
+                      <div
+                        className={`card ${
+                          isAnswerSelected(currentQuestion, option)
+                            ? "bg-primary/10 border-2 border-primary"
+                            : "bg-base-200 hover:bg-base-300 border-2 border-transparent"
+                        } transition-colors duration-150`}
+                      >
+                        <div className="card-body flex-row items-center p-4">
+                          <input
+                            type="radio"
+                            name={`question-${currentQ.id}`}
+                            className="radio radio-primary mr-3"
+                            checked={isAnswerSelected(currentQuestion, option)}
+                            onChange={() =>
+                              handleAnswerChange(currentQ.id, option)
+                            }
+                          />
+                          <span className="flex-1">{option}</span>
+                        </div>
+                      </div>
+                    </label>
+                  ))
                 )}
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Share Modal */}
-      {showShareModal && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-4">
-              <FaShare className="inline mr-2" />
-              Compartilhar Quiz
-            </h3>
-            <p className="text-base-content/70 mb-4">
-              Copie o link abaixo para compartilhar este quiz com visitantes:
-            </p>
-
-            <div className="form-control mb-6">
-              <div className="join w-full">
-                <input
-                  type="text"
-                  value={`${window.location.origin}/quiz/${id}/visitor`}
-                  readOnly
-                  className="input input-bordered join-item flex-1"
-                />
+          {/* Navigation */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <div className="flex justify-between">
                 <button
-                  className="btn btn-primary join-item"
-                  onClick={handleCopyLink}
+                  className="btn btn-outline"
+                  disabled={currentQuestion === 0}
+                  onClick={() => setCurrentQuestion((prev) => prev - 1)}
                 >
-                  <FaCopy />
-                  Copiar
+                  <FaArrowLeft />
+                  Anterior
+                </button>
+
+                <div className="flex gap-2">
+                  {currentQuestion === quiz.questions.length - 1 ? (
+                    <button
+                      className="btn btn-success btn-lg"
+                      onClick={handleSubmit}
+                      disabled={
+                        answers.filter((a) => a.selectedAnswer).length !==
+                        quiz.questions.length
+                      }
+                    >
+                      <FaCheck />
+                      Finalizar Quiz
+                    </button>
+                  ) : (
+                    <button
+                      className="btn btn-primary"
+                      disabled={currentQuestion === quiz.questions.length - 1}
+                      onClick={() => setCurrentQuestion((prev) => prev + 1)}
+                    >
+                      Próxima
+                      <FaArrowLeft className="rotate-180" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <div className="modal modal-open">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg mb-4">
+                <FaShare className="inline mr-2" />
+                Compartilhar Quiz
+              </h3>
+              <p className="text-base-content/70 mb-4">
+                Copie o link abaixo para compartilhar este quiz com visitantes:
+              </p>
+
+              <div className="form-control mb-6">
+                <div className="join w-full">
+                  <input
+                    type="text"
+                    value={`${window.location.origin}/quiz/${id}/visitor`}
+                    readOnly
+                    className="input input-bordered join-item flex-1"
+                  />
+                  <button
+                    className="btn btn-primary join-item"
+                    onClick={handleCopyLink}
+                  >
+                    <FaCopy />
+                    Copiar
+                  </button>
+                </div>
+              </div>
+
+              <div className="modal-action">
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setShowShareModal(false)}
+                >
+                  Fechar
                 </button>
               </div>
             </div>
-
-            <div className="modal-action">
-              <button
-                className="btn btn-ghost"
-                onClick={() => setShowShareModal(false)}
-              >
-                Fechar
-              </button>
-            </div>
+            <div
+              className="modal-backdrop"
+              onClick={() => setShowShareModal(false)}
+            ></div>
           </div>
-          <div
-            className="modal-backdrop"
-            onClick={() => setShowShareModal(false)}
-          ></div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Layout>
   );
 }
 
