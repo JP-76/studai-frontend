@@ -20,7 +20,10 @@ import type { Quiz, QuizAttemptDTO } from "../types/quiz";
 import Layout from "../components/Layout";
 
 function QuizResults() {
-  const { quizId, attemptId } = useParams<{ quizId: string; attemptId: string }>();
+  const { quizId, attemptId } = useParams<{
+    quizId: string;
+    attemptId: string;
+  }>();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,7 +41,9 @@ function QuizResults() {
       }
 
       try {
-        const attemptFromState = location.state?.attempt as QuizAttemptDTO | undefined;
+        const attemptFromState = location.state?.attempt as
+          | QuizAttemptDTO
+          | undefined;
         const quizFromState = location.state?.quiz as Quiz | undefined;
 
         if (attemptFromState && quizFromState) {
@@ -73,6 +78,8 @@ function QuizResults() {
           const response = await api.get("/v1/me");
           setUsername(response.data.username);
         } catch {
+          console.error("Erro ao carregar o nome de usuário");
+          setUsername("Usuário Desconhecido");
         }
       }
     };
@@ -137,25 +144,25 @@ function QuizResults() {
         return [
           "Continue explorando tópicos avançados",
           "Ajude outros estudantes com suas dúvidas",
-          "Tente quizzes mais desafiadores"
+          "Tente quizzes mais desafiadores",
         ];
       case "Ótimo":
         return [
           "Revise os tópicos onde você errou",
           "Pratique mais para alcançar a excelência",
-          "Explore recursos adicionais de estudo"
+          "Explore recursos adicionais de estudo",
         ];
       case "Bom":
         return [
           "Dedique mais tempo aos estudos",
           "Revise os conceitos fundamentais",
-          "Faça mais quizzes sobre o mesmo tema"
+          "Faça mais quizzes sobre o mesmo tema",
         ];
       case "Pode melhorar":
         return [
           "Estude os conceitos básicos primeiro",
           "Pratique com quizzes mais simples",
-          "Considere buscar ajuda de um tutor"
+          "Considere buscar ajuda de um tutor",
         ];
       default:
         return ["Continue praticando regularmente"];
@@ -164,12 +171,12 @@ function QuizResults() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -181,15 +188,13 @@ function QuizResults() {
 
   const calculateStats = () => {
     if (!attempt) return { correct: 0, incorrect: 0, total: 0 };
-    
-    const correct = attempt.answers.filter(a => a.correct).length;
+
+    const correct = attempt.answers.filter((a) => a.correct).length;
     const total = attempt.answers.length;
     const incorrect = total - correct;
-    
+
     return { correct, incorrect, total };
   };
-
-
 
   const handleRetakeQuiz = () => {
     navigate(`/quiz/${quizId}`);
@@ -213,8 +218,13 @@ function QuizResults() {
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Resultados não encontrados</h2>
-            <button className="btn btn-primary" onClick={() => navigate("/home")}>
+            <h2 className="text-2xl font-bold mb-4">
+              Resultados não encontrados
+            </h2>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate("/home")}
+            >
               Voltar ao início
             </button>
           </div>
@@ -230,216 +240,279 @@ function QuizResults() {
     <Layout>
       <div className="p-4">
         <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body text-center">
-            <div className="flex justify-center mb-4">
-              {getPerformanceIcon(performanceLevel)}
-            </div>
-            <h1 className="text-3xl font-bold mb-2">Resultados do Quiz</h1>
-            <h2 className="text-xl text-base-content/70 mb-4">{quiz.title}</h2>
-            <p className={`text-lg font-semibold ${getPerformanceColor(performanceLevel)}`}>
-              {getPerformanceMessage(performanceLevel)}
-            </p>
-            
-            {/* User Info */}
-            <div className="flex items-center justify-center gap-2 mt-4 text-sm text-base-content/60">
-              <FaUser />
-              <span>
-                {attempt.guestUser
-                  ? `Visitante: ${attempt.guestName || 'Anônimo'}`
-                  : username
-                    ? `Usuário: ${username}`
-                    : 'Usuário Logado'}
-              </span>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 mt-2 text-sm text-base-content/60">
-              <FaCalendarAlt />
-              <span>Concluído em {formatDate(attempt.createdAt)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Score Overview */}
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* Main Score Card */}
-          <div className="card bg-base-100 shadow-xl">
+          {/* Header */}
+          <div className="card bg-base-100 shadow-xl mb-6">
             <div className="card-body text-center">
-              <h3 className="card-title justify-center mb-4">
-                <FaChartLine className="text-primary" />
-                Pontuação Final
-              </h3>
-              <div className="text-6xl font-bold text-primary mb-2">
-                {attempt.score}%
+              <div className="flex justify-center mb-4">
+                {getPerformanceIcon(performanceLevel)}
               </div>
-              <div className="progress progress-primary w-full">
-                <div
-                  className="progress-bar"
-                  style={{ width: `${attempt.score}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-base-content/70 mt-2">
-                {stats.correct} de {stats.total} questões corretas
+              <h1 className="text-3xl font-bold mb-2">Resultados do Quiz</h1>
+              <h2 className="text-xl text-base-content/70 mb-4">
+                {quiz.title}
+              </h2>
+              <p
+                className={`text-lg font-semibold ${getPerformanceColor(
+                  performanceLevel
+                )}`}
+              >
+                {getPerformanceMessage(performanceLevel)}
               </p>
+
+              {/* User Info */}
+              <div className="flex items-center justify-center gap-2 mt-4 text-sm text-base-content/60">
+                <FaUser />
+                <span>
+                  {attempt.guestUser
+                    ? `Visitante: ${attempt.guestName || "Anônimo"}`
+                    : username
+                    ? `Usuário: ${username}`
+                    : "Usuário Logado"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 mt-2 text-sm text-base-content/60">
+                <FaCalendarAlt />
+                <span>Concluído em {formatDate(attempt.createdAt)}</span>
+              </div>
             </div>
           </div>
 
-          {/* Detailed Stats */}
-          <div className="card bg-base-100 shadow-xl">
+          {/* Score Overview */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            {/* Main Score Card */}
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body text-center">
+                <h3 className="card-title justify-center mb-4">
+                  <FaChartLine className="text-primary" />
+                  Pontuação Final
+                </h3>
+                <div className="text-6xl font-bold text-primary mb-2">
+                  {attempt.score}%
+                </div>
+                <div className="progress progress-primary w-full">
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${attempt.score}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm text-base-content/70 mt-2">
+                  {stats.correct} de {stats.total} questões corretas
+                </p>
+              </div>
+            </div>
+
+            {/* Detailed Stats */}
+            <div className="card bg-base-100 shadow-xl">
+              <div className="card-body">
+                <h3 className="card-title mb-4">
+                  <FaCheckCircle className="text-success" />
+                  Estatísticas Detalhadas
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">Acertos:</span>
+                    <span className="font-semibold text-success">
+                      {stats.correct}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">Erros:</span>
+                    <span className="font-semibold text-error">
+                      {stats.incorrect}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">Total:</span>
+                    <span className="font-semibold">{stats.total}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">Tempo Total:</span>
+                    <span className="font-semibold">
+                      {formatTime(attempt.timeSpent)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">
+                      Tempo Médio/Questão:
+                    </span>
+                    <span className="font-semibold">
+                      {Math.round(attempt.timeSpent / stats.total)}s
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-base-content/70">Tipo:</span>
+                    <span className="font-semibold text-primary">
+                      {attempt.guestUser ? "Visitante" : "Usuário"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Analysis */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <h3 className="card-title mb-4">
+                <FaLightbulb className="text-warning" />
+                Análise de Performance
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-base-200 rounded-lg">
+                  <div className="text-2xl font-bold text-success mb-2">
+                    {Math.round((stats.correct / stats.total) * 100)}%
+                  </div>
+                  <div className="text-sm text-base-content/70">
+                    Taxa de Acerto
+                  </div>
+                </div>
+                <div className="text-center p-4 bg-base-200 rounded-lg">
+                  <div className="text-2xl font-bold text-error mb-2">
+                    {Math.round((stats.incorrect / stats.total) * 100)}%
+                  </div>
+                  <div className="text-sm text-base-content/70">
+                    Taxa de Erro
+                  </div>
+                </div>
+                <div className="text-center p-4 bg-base-200 rounded-lg">
+                  <div className="text-2xl font-bold text-primary mb-2">
+                    {performanceLevel.toUpperCase()}
+                  </div>
+                  <div className="text-sm text-base-content/70">Nível</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Answer Review */}
+          <div className="card bg-base-100 shadow-xl mb-6">
             <div className="card-body">
               <h3 className="card-title mb-4">
                 <FaCheckCircle className="text-success" />
-                Estatísticas Detalhadas
+                Revisão das Respostas
               </h3>
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Acertos:</span>
-                  <span className="font-semibold text-success">
-                    {stats.correct}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Erros:</span>
-                  <span className="font-semibold text-error">
-                    {stats.incorrect}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Total:</span>
-                  <span className="font-semibold">{stats.total}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Tempo Total:</span>
-                  <span className="font-semibold">
-                    {formatTime(attempt.timeSpent)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Tempo Médio/Questão:</span>
-                  <span className="font-semibold">
-                    {Math.round(attempt.timeSpent / stats.total)}s
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-base-content/70">Tipo:</span>
-                  <span className="font-semibold text-primary">
-                    {attempt.guestUser ? 'Visitante' : 'Usuário'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Performance Analysis */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <h3 className="card-title mb-4">
-              <FaLightbulb className="text-warning" />
-              Análise de Performance
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-base-200 rounded-lg">
-                <div className="text-2xl font-bold text-success mb-2">
-                  {Math.round((stats.correct / stats.total) * 100)}%
-                </div>
-                <div className="text-sm text-base-content/70">Taxa de Acerto</div>
-              </div>
-              <div className="text-center p-4 bg-base-200 rounded-lg">
-                <div className="text-2xl font-bold text-error mb-2">
-                  {Math.round((stats.incorrect / stats.total) * 100)}%
-                </div>
-                <div className="text-sm text-base-content/70">Taxa de Erro</div>
-              </div>
-              <div className="text-center p-4 bg-base-200 rounded-lg">
-                <div className="text-2xl font-bold text-primary mb-2">
-                  {performanceLevel.toUpperCase()}
-                </div>
-                <div className="text-sm text-base-content/70">Nível</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Answer Review */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <h3 className="card-title mb-4">
-              <FaCheckCircle className="text-success" />
-              Revisão das Respostas
-            </h3>
-            <div className="space-y-3">
-              {attempt.answers.map((answer, index) => {
-                const question = quiz.questions.find(q => q.id === answer.questionId);
-                return (
-                  <div key={answer.id} className="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-base-200 rounded-lg">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      answer.correct ? 'bg-success text-success-content' : 'bg-error text-error-content'
-                    }`}>
-                      {answer.correct ? <FaCheckCircle /> : <FaTimesCircle />}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium mb-1">{question ? question.statement : `Questão ${index + 1}`}</div>
-                      <div className="text-sm text-base-content/70">
-                        Sua resposta: {question && question.questionType === "TRUE_OR_FALSE" ? (answer.answer === "true" ? "True" : answer.answer === "false" ? "False" : answer.answer) : answer.answer}
+                {attempt.answers.map((answer, index) => {
+                  const question = quiz.questions.find(
+                    (q) => q.id === answer.questionId
+                  );
+                  return (
+                    <div
+                      key={answer.id}
+                      className="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-base-200 rounded-lg"
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          answer.correct
+                            ? "bg-success text-success-content"
+                            : "bg-error text-error-content"
+                        }`}
+                      >
+                        {answer.correct ? <FaCheckCircle /> : <FaTimesCircle />}
                       </div>
-                      {!answer.correct && question && (
-                        <div className="text-sm text-error mt-1">
-                          Resposta correta: {question.questionType === "TRUE_OR_FALSE" ? (question.correctAnswer === "true" ? "True" : question.correctAnswer === "false" ? "False" : question.correctAnswer) : question.correctAnswer}
+                      <div className="flex-1">
+                        <div className="font-medium mb-1">
+                          {question
+                            ? question.statement
+                            : `Questão ${index + 1}`}
                         </div>
-                      )}
+                        <div className="text-sm text-base-content/70">
+                          Sua resposta:{" "}
+                          {question && question.questionType === "TRUE_OR_FALSE"
+                            ? (() => {
+                                const userAnswer = answer.answer;
+                                if (
+                                  userAnswer === "Verdadeiro" ||
+                                  userAnswer === "Verdadeiro"
+                                ) {
+                                  return "Verdadeiro";
+                                } else if (
+                                  userAnswer === "Falso" ||
+                                  userAnswer === "Falso"
+                                ) {
+                                  return "Falso";
+                                } else {
+                                  return userAnswer;
+                                }
+                              })()
+                            : answer.answer}
+                        </div>
+                        {!answer.correct && question && (
+                          <div className="text-sm text-error mt-1">
+                            Resposta correta:{" "}
+                            {question.questionType === "TRUE_OR_FALSE"
+                              ? (() => {
+                                  const correctAnswer = question.correctAnswer;
+                                  if (
+                                    correctAnswer === "Verdadeiro" ||
+                                    correctAnswer === "Verdadeiro"
+                                  ) {
+                                    return "Verdadeiro";
+                                  } else if (
+                                    correctAnswer === "Falso" ||
+                                    correctAnswer === "Falso"
+                                  ) {
+                                    return "Falso";
+                                  } else {
+                                    return correctAnswer;
+                                  }
+                                })()
+                              : question.correctAnswer}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Recommendations */}
-        <div className="card bg-base-100 shadow-xl mb-6">
-          <div className="card-body">
-            <h3 className="card-title mb-4">
-              <FaStar className="text-warning" />
-              Recomendações
-            </h3>
-            <div className="space-y-3">
-              {getRecommendations(performanceLevel).map((recommendation, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-base-content/80">{recommendation}</p>
-                </div>
-              ))}
+          {/* Recommendations */}
+          <div className="card bg-base-100 shadow-xl mb-6">
+            <div className="card-body">
+              <h3 className="card-title mb-4">
+                <FaStar className="text-warning" />
+                Recomendações
+              </h3>
+              <div className="space-y-3">
+                {getRecommendations(performanceLevel).map(
+                  (recommendation, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                      <p className="text-base-content/80">{recommendation}</p>
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="flex flex-wrap gap-3 justify-center">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate("/home")}
-              >
-                <FaHome />
-                Voltar ao Início
-              </button>
-              <button
-                className="btn btn-outline btn-secondary"
-                onClick={handleRetakeQuiz}
-              >
-                <FaRedo />
-                Refazer Quiz
-              </button>
+          {/* Action Buttons */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <div className="flex flex-wrap gap-3 justify-center">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate("/home")}
+                >
+                  <FaHome />
+                  Voltar ao Início
+                </button>
+                <button
+                  className="btn btn-outline btn-secondary"
+                  onClick={handleRetakeQuiz}
+                >
+                  <FaRedo />
+                  Refazer Quiz
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </Layout>
   );
 }
 
-export default QuizResults; 
+export default QuizResults;

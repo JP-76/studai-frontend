@@ -21,7 +21,7 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      await api.post("/v1/auth/logout");
+      await api.post("/v1/logout");
       localStorage.removeItem("token");
       removeCookie("auth_token");
       toast.success("Logout realizado com sucesso!");

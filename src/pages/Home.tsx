@@ -106,7 +106,7 @@ function Home() {
       const params = {
         questionsQuantity: 10,
         sourceType: "PDF_CONTENT",
-        languageCode: "EN",
+        languageCode: "PT",
         startPage: 0,
         endPage: pdfPageCount,
       };
@@ -183,13 +183,13 @@ function Home() {
           ? {
               questionsQuantity: 10,
               sourceType: "PROMPT_BASED",
-              languageCode: "EN",
+              languageCode: "PT",
               sourceContent: freeTheme,
             }
           : {
               questionsQuantity: 10,
               sourceType: "YOUTUBE_VIDEO",
-              languageCode: "EN",
+              languageCode: "PT",
               sourceContent: extractYoutubeId(youtubeUrl),
             };
 
