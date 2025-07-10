@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import api from "../lib/axios";
 import type { Quiz, QuizAttemptDTO } from "../types/quiz";
+import Layout from "../components/Layout";
 
 function QuizResults() {
   const { quizId, attemptId } = useParams<{ quizId: string; attemptId: string }>();
@@ -201,25 +202,29 @@ function QuizResults() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="text-center">
-          <span className="loading loading-spinner loading-lg"></span>
-          <p className="mt-4">Carregando resultados...</p>
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <span className="loading loading-spinner loading-lg"></span>
+            <p className="mt-4">Carregando resultados...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (!attempt || !quiz) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Resultados não encontrados</h2>
-          <button className="btn btn-primary" onClick={() => navigate("/home")}>
-            Voltar ao início
-          </button>
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Resultados não encontrados</h2>
+            <button className="btn btn-primary" onClick={() => navigate("/home")}>
+              Voltar ao início
+            </button>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
@@ -227,8 +232,9 @@ function QuizResults() {
   const stats = calculateStats();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
-      <div className="max-w-4xl mx-auto">
+    <Layout>
+      <div className="p-4">
+        <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="card bg-base-100 shadow-xl mb-6">
           <div className="card-body text-center">
@@ -435,8 +441,9 @@ function QuizResults() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

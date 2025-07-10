@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { Quiz } from "../types/quiz";
 import { FaSpinner } from "react-icons/fa";
 import api from "../lib/axios";
+import Layout from "../components/Layout";
 
 function QuizList() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -32,54 +33,64 @@ function QuizList() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
-        <FaSpinner className="animate-spin text-4xl text-primary" />
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
+          <FaSpinner className="animate-spin text-4xl text-primary" />
+        </div>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
-        <p className="text-error text-lg">{error}</p>
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
+          <p className="text-error text-lg">{error}</p>
+        </div>
+      </Layout>
     );
   }
 
   if (quizzes.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
-        <h2 className="text-xl opacity-70">Sem quizzes disponíveis.</h2>
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center h-screen bg-gradient-to-br from-primary/10 to-secondary/10">
+          <h2 className="text-xl opacity-70">Sem quizzes disponíveis.</h2>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-6">Seus Quizzes</h1>
+    <Layout>
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold text-center mb-6">Seus Quizzes</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quizzes.map((q) => (
-            <div
-              key={q.id}
-              className="card bg-base-100 border border-base-300 shadow-md hover:shadow-xl transition-shadow p-6 justify-between"
-            >
-              <h3 className="text-xl font-semibold">{q.title}</h3>
-              {q.description && (
-                <p className="mt-2 text-sm text-base-content/80">{q.description}</p>
-              )}
-              <button
-                className="btn btn-sm btn-primary mt-4 w-full"
-                onClick={() => navigate(`/quiz/${q.id}`)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quizzes.map((q) => (
+              <div
+                key={q.id}
+                className="card bg-base-100 border border-base-300 shadow-md hover:shadow-xl transition-shadow p-6 justify-between"
               >
-                Ver Quiz
-              </button>
-            </div>
-          ))}
+                <h3 className="text-xl font-semibold">{q.title}</h3>
+                {q.description && (
+                  <p className="mt-2 text-sm text-base-content/80">
+                    {q.description}
+                  </p>
+                )}
+                <button
+                  className="btn btn-sm btn-primary mt-4 w-full"
+                  onClick={() => navigate(`/quiz/${q.id}/details`)}
+                >
+                  Ver Quiz
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 
