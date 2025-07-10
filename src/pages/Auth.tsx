@@ -168,7 +168,7 @@ const AuthPage = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-base-200 p-4">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
       <div className="card w-full max-w-md bg-base-100 shadow-xl border border-base-300">
         <div className="border-b border-dashed border-base-300">
           <div className="flex items-center justify-between p-4">
