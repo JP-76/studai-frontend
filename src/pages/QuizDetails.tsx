@@ -21,6 +21,7 @@ function QuizDetails() {
   });
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportType, setExportType] = useState<"csv" | "xlsx">("csv");
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -231,10 +232,13 @@ function QuizDetails() {
               <button
                 className="btn btn-outline"
                 onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/quiz/${quiz.id}/visitor`
-                  );
-                  toast.success("Link para convidados copiado!");
+                  const url = `${window.location.origin}/quiz/${quiz.id}/visitor`;
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url);
+                    toast.success("Link para convidados copiado!");
+                  } else {
+                    setShowShareModal(true);
+                  }
                 }}
               >
                 Compartilhar Quiz
@@ -309,6 +313,62 @@ function QuizDetails() {
               <div
                 className="modal-backdrop"
                 onClick={() => setShowExportModal(false)}
+              ></div>
+            </div>
+          )}
+          {showShareModal && (
+            <div className="modal modal-open">
+              <div className="modal-box">
+                <h3 className="font-bold text-lg mb-4">
+                  Compartilhar Quiz
+                </h3>
+                <p className="text-base-content/70 mb-4">
+                  Copie o link abaixo para compartilhar este quiz com visitantes:
+                </p>
+                <div className="form-control mb-6">
+                  <div className="join w-full">
+                    <input
+                      type="text"
+                      value={`${window.location.origin}/quiz/${quiz.id}/visitor`}
+                      readOnly
+                      className="input input-bordered join-item flex-1"
+                    />
+                    <button
+                      className="btn btn-primary join-item"
+                      onClick={() => {
+                        const url = `${window.location.origin}/quiz/${quiz.id}/visitor`;
+                        // Fallback copy logic
+                        const textArea = document.createElement("textarea");
+                        textArea.value = url;
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        try {
+                          document.execCommand("copy");
+                          toast.success("Link copiado para a área de transferência!");
+                        } catch (err) {
+                          toast.error("Não foi possível copiar o link.");
+                        }
+                        document.body.removeChild(textArea);
+                        setShowShareModal(false);
+                      }}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                </div>
+                <div className="modal-action">
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => setShowShareModal(false)}
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+              <div
+                className="modal-backdrop"
+                onClick={() => setShowShareModal(false)}
               ></div>
             </div>
           )}
