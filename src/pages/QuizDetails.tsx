@@ -232,13 +232,7 @@ function QuizDetails() {
               <button
                 className="btn btn-outline"
                 onClick={() => {
-                  const url = `${window.location.origin}/quiz/${quiz.id}/visitor`;
-                  if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(url);
-                    toast.success("Link para convidados copiado!");
-                  } else {
-                    setShowShareModal(true);
-                  }
+                  setShowShareModal(true);
                 }}
               >
                 Compartilhar Quiz
