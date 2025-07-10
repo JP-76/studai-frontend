@@ -1,69 +1,56 @@
-# React + TypeScript + Vite
+# StudAI – AI-Powered Quiz Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StudAI is a modern web application that leverages artificial intelligence to help students and lifelong learners accelerate their studies through smart, personalized quizzes. With StudAI, you can generate quizzes from any topic or even from YouTube videos, track your progress, and receive tailored feedback to optimize your learning journey.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **AI-Generated Quizzes:** Instantly create quizzes on any topic or from YouTube videos using advanced AI algorithms.
+- **Personalized Learning:** The platform adapts to your learning style and provides custom study recommendations.
+- **Progress Analytics:** Track your performance with detailed analytics and insights to identify areas for improvement.
+- **User Accounts:** Register and manage your quizzes and results securely.
+- **Shareable Quizzes:** Share quizzes with others or take quizzes as a visitor.
+- **Export Results:** Download your quiz results for offline review (CSV/XLSX).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Environment Variables
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Create a `.env` file in the project root with the following variable:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+# Base URL for the backend API
+VITE_API_URL=https://your-api-url.com
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting Started
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm
+
+### Installation
+
+```bash
+npm install
 ```
+
+### Running the App
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:5173` by default.
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+
