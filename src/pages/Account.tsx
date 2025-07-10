@@ -11,6 +11,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import Cookies from "js-cookie";
 
 function AccountSettings() {
   const [username, setUsername] = useState("");
@@ -124,6 +125,8 @@ function AccountSettings() {
       await api.delete("/v1/me", {
         data: { password: deletePassword },
       });
+      Cookies.remove("auth_token");
+      localStorage.removeItem("token");
       toast.success("Conta excluída com sucesso.");
       navigate("/");
     } catch {
