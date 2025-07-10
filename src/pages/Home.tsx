@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { FaBook, FaYoutube, FaRocket, FaBrain } from "react-icons/fa";
+import {
+  FaBook,
+  FaYoutube,
+  FaRocket,
+  FaBrain,
+  FaFilePdf,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import * as pdfjsLib from "pdfjs-dist";
 import api from "../lib/axios";
 import Layout from "../components/Layout";
 
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/js/pdf.worker.min.js";
+
 function Home() {
   const navigate = useNavigate();
-  const [selectedOption, setSelectedOption] = useState<"tema" | "url" | null>(
-    null
-  );
+  const [selectedOption, setSelectedOption] = useState<
+    "tema" | "url" | "pdf" | null
+  >(null);
   const [freeTheme, setFreeTheme] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pdfPageCount, setPdfPageCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const validateYoutubeUrl = (url: string): boolean => {
@@ -34,9 +45,123 @@ function Home() {
     return null;
   };
 
+  const countPdfPages = async (file: File): Promise<number> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      return pdf.numPages;
+    } catch (error) {
+      console.error("Erro ao contar páginas do PDF:", error);
+      throw new Error("Não foi possível ler o arquivo PDF");
+    }
+  };
+
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Verificar se é um PDF válido
+      if (file.type === "application/pdf") {
+        try {
+          // Contar páginas do PDF
+          const pageCount = await countPdfPages(file);
+
+          if (pageCount > 25) {
+            toast.error(
+              `PDF tem ${pageCount} páginas. Máximo permitido: 25 páginas.`
+            );
+            setSelectedFile(null);
+            setPdfPageCount(null);
+            return;
+          }
+
+          setSelectedFile(file);
+          setPdfPageCount(pageCount);
+        } catch {
+          toast.error(
+            "Erro ao ler o arquivo PDF. Verifique se o arquivo não está corrompido."
+          );
+          setSelectedFile(null);
+          setPdfPageCount(null);
+        }
+      } else {
+        setSelectedFile(null);
+        setPdfPageCount(null);
+        toast.error("Por favor, selecione um arquivo PDF válido");
+      }
+    } else {
+      setSelectedFile(null);
+      setPdfPageCount(null);
+    }
+  };
+
+  const handlePdfUpload = async () => {
+    if (!selectedFile || !pdfPageCount) {
+      toast.error("Selecione um arquivo PDF válido");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      const params = {
+        questionsQuantity: 10,
+        sourceType: "PDF_CONTENT",
+        languageCode: "PT",
+        startPage: 1,
+        endPage: pdfPageCount, // Usar o número real de páginas
+      };
+
+      const result = await api.post("/v1/quiz/from-file", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        params,
+      });
+
+      console.log("Quiz generated from PDF:", result.data);
+      toast.success("Quiz gerado com sucesso a partir do PDF!");
+
+      // Navigate to quiz page with quiz data
+      navigate(`/quiz/${result.data.id}`, {
+        state: { quiz: result.data },
+      });
+    } catch (error: unknown) {
+      console.error("Error generating quiz from PDF:", error);
+
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const axiosError = error as { response?: { status: number } };
+
+        if (axiosError.response?.status === 500) {
+          toast.error("Erro interno do servidor. Tente novamente mais tarde.");
+        } else if (axiosError.response?.status === 401) {
+          toast.error("Sessão expirada. Faça login novamente.");
+        } else if (axiosError.response?.status === 400) {
+          toast.error(
+            "PDF inválido. Verifique se tem no máximo 25 páginas e não está vazio."
+          );
+        } else {
+          toast.error("Erro ao processar PDF. Tente novamente.");
+        }
+      } else {
+        toast.error("Erro ao processar PDF. Tente novamente.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleGenerateQuiz = async () => {
     if (!selectedOption) {
       toast.error("Selecione uma opção para gerar o quiz");
+      return;
+    }
+
+    if (selectedOption === "pdf") {
+      await handlePdfUpload();
       return;
     }
 
@@ -141,7 +266,7 @@ function Home() {
               </h2>
 
               {/* Options */}
-              <div className="grid md:grid-cols-2 gap-4 mb-8">
+              <div className="grid md:grid-cols-3 gap-4 mb-8">
                 {/* Tema Livre */}
                 <div
                   className={`card cursor-pointer transition-all hover:shadow-lg ${
@@ -178,6 +303,24 @@ function Home() {
                     <div className="badge badge-warning badge-sm mt-2">
                       ⚠️ Instável
                     </div>
+                  </div>
+                </div>
+
+                {/* Upload PDF */}
+                <div
+                  className={`card cursor-pointer transition-all hover:shadow-lg ${
+                    selectedOption === "pdf"
+                      ? "bg-primary/10 border-2 border-primary"
+                      : "bg-base-200 hover:bg-base-300"
+                  }`}
+                  onClick={() => setSelectedOption("pdf")}
+                >
+                  <div className="card-body items-center text-center p-6">
+                    <FaFilePdf className="text-3xl text-accent mb-3" />
+                    <h3 className="card-title text-lg">Upload PDF</h3>
+                    <p className="text-sm text-base-content/70">
+                      Faça upload de um documento PDF para gerar o quiz
+                    </p>
                   </div>
                 </div>
               </div>
@@ -256,6 +399,80 @@ function Home() {
                     </div>
                   )}
 
+                  {selectedOption === "pdf" && (
+                    <div className="form-control space-y-4">
+                      <div className="alert alert-info">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="stroke-current shrink-0 h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <div className="text-sm">
+                          <strong>Requisitos do PDF:</strong>
+                          <ul className="mt-1 list-disc list-inside space-y-1">
+                            <li>Máximo de 25 páginas</li>
+                            <li>Não pode estar vazio (deve conter texto)</li>
+                            <li>Formato: PDF</li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <label className="label">
+                        <span className="label-text font-medium text-lg">
+                          Selecione um arquivo PDF
+                        </span>
+                      </label>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        className="file-input file-input-bordered file-input-lg w-full"
+                        onChange={handleFileSelect}
+                      />
+                      {selectedFile && pdfPageCount && (
+                        <div className="alert alert-success">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="stroke-current shrink-0 h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <div>
+                            <span>
+                              Arquivo selecionado: {selectedFile.name}
+                            </span>
+                            <br />
+                            <span className="text-sm">
+                              {pdfPageCount} página
+                              {pdfPageCount !== 1 ? "s" : ""} encontrada
+                              {pdfPageCount !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <label className="label">
+                        <span className="label-text-alt text-base-content/60">
+                          O arquivo será validado pelo servidor antes do
+                          processamento
+                        </span>
+                      </label>
+                    </div>
+                  )}
+
                   {/* Generate Button */}
                   <div className="card-actions justify-center mt-8">
                     <button
@@ -266,12 +483,16 @@ function Home() {
                       {isLoading ? (
                         <>
                           <span className="loading loading-spinner loading-sm"></span>
-                          Gerando Quiz...
+                          {selectedOption === "pdf"
+                            ? "Processando PDF..."
+                            : "Gerando Quiz..."}
                         </>
                       ) : (
                         <>
                           <FaRocket />
-                          Gerar Quiz
+                          {selectedOption === "pdf"
+                            ? "Processar PDF"
+                            : "Gerar Quiz"}
                         </>
                       )}
                     </button>

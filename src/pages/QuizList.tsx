@@ -81,7 +81,7 @@ function QuizList() {
                 )}
                 <button
                   className="btn btn-sm btn-primary mt-4 w-full"
-                  onClick={() => navigate(`/quiz/${q.id}`)}
+                  onClick={() => navigate(`/quiz/${q.id}/details`)}
                 >
                   Ver Quiz
                 </button>
