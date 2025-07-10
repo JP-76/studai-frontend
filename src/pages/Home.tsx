@@ -59,10 +59,8 @@ function Home() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Verificar se é um PDF válido
       if (file.type === "application/pdf") {
         try {
-          // Contar páginas do PDF
           const pageCount = await countPdfPages(file);
 
           if (pageCount > 25) {
@@ -108,9 +106,9 @@ function Home() {
       const params = {
         questionsQuantity: 10,
         sourceType: "PDF_CONTENT",
-        languageCode: "PT",
+        languageCode: "EN",
         startPage: 0,
-        endPage: pdfPageCount, // Usar o número real de páginas
+        endPage: pdfPageCount,
       };
 
       const result = await api.post("/v1/quiz/from-file", formData, {
@@ -123,7 +121,6 @@ function Home() {
       console.log("Quiz generated from PDF:", result.data);
       toast.success("Quiz gerado com sucesso a partir do PDF!");
 
-      // Navigate to quiz page with quiz data
       navigate(`/quiz/${result.data.id}`, {
         state: { quiz: result.data },
       });
@@ -181,20 +178,19 @@ function Home() {
     setIsLoading(true);
 
     try {
-      // Aqui você fará a requisição para a API
       const payload =
         selectedOption === "tema"
           ? {
               questionsQuantity: 10,
               sourceType: "PROMPT_BASED",
-              languageCode: "PT",
+              languageCode: "EN",
               sourceContent: freeTheme,
             }
           : {
               questionsQuantity: 10,
               sourceType: "YOUTUBE_VIDEO",
-              languageCode: "PT",
-              sourceContent: extractYoutubeId(youtubeUrl), // Enviando apenas o ID
+              languageCode: "EN",
+              sourceContent: extractYoutubeId(youtubeUrl),
             };
 
       const result = await api.post("/v1/quiz", payload, {
@@ -207,18 +203,15 @@ function Home() {
 
       toast.success("Quiz gerado com sucesso!");
 
-      // Navigate to quiz page with quiz data
       navigate(`/quiz/${result.data.id}`, {
         state: { quiz: result.data },
       });
     } catch (error: unknown) {
       console.error("Error generating quiz:", error);
 
-      // Verificar se é um erro de axios
       if (typeof error === "object" && error !== null && "response" in error) {
         const axiosError = error as { response?: { status: number } };
 
-        // Erro 500 específico para YouTube
         if (axiosError.response?.status === 500 && selectedOption === "url") {
           toast.error(
             "🔧 Funcionalidade do YouTube está temporariamente fora do ar. Tente novamente mais tarde ou use a opção 'Tema Livre'."

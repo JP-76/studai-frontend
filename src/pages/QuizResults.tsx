@@ -38,7 +38,6 @@ function QuizResults() {
       }
 
       try {
-        // Try to get results from navigation state first
         const attemptFromState = location.state?.attempt as QuizAttemptDTO | undefined;
         const quizFromState = location.state?.quiz as Quiz | undefined;
 
@@ -49,10 +48,8 @@ function QuizResults() {
           return;
         }
 
-        // Fetch attempt by ID using the new endpoint
         const response = await api.get(`/v1/quiz/attempt/${attemptId}`);
         setAttempt(response.data);
-        // Fetch quiz data if not included in the response
         if (response.data.quizId) {
           const quizResponse = await api.get(`/v1/quiz/${quizId}`);
           setQuiz(quizResponse.data);
@@ -70,14 +67,12 @@ function QuizResults() {
   }, [quizId, attemptId, navigate, location.state]);
 
   useEffect(() => {
-    // Fetch username for logged-in users
     const fetchUsername = async () => {
       if (attempt && !attempt.guestUser) {
         try {
           const response = await api.get("/v1/me");
           setUsername(response.data.username);
         } catch {
-          // Optionally handle error
         }
       }
     };

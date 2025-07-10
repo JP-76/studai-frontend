@@ -18,10 +18,8 @@ function QuizPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check if this is a visitor route
   const isVisitorRoute = location.pathname.includes("/visitor");
 
-  // Check if quiz data was passed via navigation state
   const quizFromState = location.state?.quiz as Quiz | undefined;
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -42,10 +40,8 @@ function QuizPage() {
     const loadQuizData = async () => {
       if (!id) return;
 
-      // If quiz data is already available from navigation state, use it
       if (quizFromState) {
         setQuiz(quizFromState);
-        // Initialize answers array
         const initialAnswers: QuizAnswer[] = quizFromState.questions.map(
           (q: QuizQuestion) => ({
             questionId: q.id,
@@ -53,25 +49,20 @@ function QuizPage() {
           })
         );
         setAnswers(initialAnswers);
-        // Initialize hints state (all false initially)
         setShowHints(new Array(quizFromState.questions.length).fill(false));
         setLoading(false);
-        // For non-visitor routes, set nameSet to true automatically
         if (!isVisitorRoute) {
           setNameSet(true);
         }
         return;
       }
 
-      // Otherwise, fetch quiz data from API
       try {
-        // Use different endpoint based on whether it's a visitor route
         const endpoint = isVisitorRoute
           ? `/v1/guest/quiz/${id}`
           : `/v1/quiz/${id}`;
         const response = await api.get(endpoint);
         setQuiz(response.data);
-        // Initialize answers array
         const initialAnswers: QuizAnswer[] = response.data.questions.map(
           (q: QuizQuestion) => ({
             questionId: q.id,
@@ -79,9 +70,7 @@ function QuizPage() {
           })
         );
         setAnswers(initialAnswers);
-        // Initialize hints state (all false initially)
         setShowHints(new Array(response.data.questions.length).fill(false));
-        // For non-visitor routes, set nameSet to true automatically
         if (!isVisitorRoute) {
           setNameSet(true);
         }
@@ -96,7 +85,6 @@ function QuizPage() {
     loadQuizData();
   }, [id, navigate, quizFromState, isVisitorRoute]);
 
-  // For non-visitor routes, set nameSet to true automatically
   useEffect(() => {
     if (!isVisitorRoute) {
       setNameSet(true);
@@ -104,14 +92,12 @@ function QuizPage() {
   }, [isVisitorRoute]);
 
   useEffect(() => {
-    // Fetch username for logged-in users
     const fetchUsername = async () => {
       if (!isVisitorRoute) {
         try {
           const response = await api.get("/v1/me");
           setUsername(response.data.username);
         } catch {
-          // Optionally handle error (e.g., redirect to login)
         }
       }
     };
@@ -152,21 +138,19 @@ function QuizPage() {
   const handleSubmit = async () => {
     if (!quiz) return;
 
-    // Check if all questions are answered
     const unansweredQuestions = answers.filter((a) => !a.selectedAnswer);
     if (unansweredQuestions.length > 0) {
       toast.error("Por favor, responda todas as questões antes de finalizar.");
       return;
     }
 
-    // Convert answers array to object { [questionId]: selectedAnswer }
     const answersObject = answers.reduce((acc, curr) => {
       acc[curr.questionId] = curr.selectedAnswer;
       return acc;
     }, {} as Record<string, string>);
 
     const endTime = Date.now();
-    const elapsed = startTime ? Math.floor((endTime - startTime) / 1000) : 0; // in seconds
+    const elapsed = startTime ? Math.floor((endTime - startTime) / 1000) : 0;
 
     const payload = {
       quizId: quiz.id,
@@ -175,7 +159,6 @@ function QuizPage() {
       answers: answersObject,
     };
 
-    // Select endpoint based on user type
     const endpoint = isVisitorRoute
       ? "/v1/guest/quiz/attempt"
       : "/v1/quiz/attempt";
@@ -183,7 +166,6 @@ function QuizPage() {
     try {
       const response = await api.post(endpoint, payload);
       toast.success("Quiz finalizado com sucesso!");
-      // Navigate to results page with quiz and attempt data
       navigate(`/quiz/${quiz.id}/results/${response.data.id}`, {
         state: {
           quiz: quiz,
@@ -247,7 +229,6 @@ function QuizPage() {
     );
   }
 
-  // Visitor name input screen (only for visitor route)
   if (isVisitorRoute && !nameSet) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">

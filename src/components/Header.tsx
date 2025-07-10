@@ -28,7 +28,6 @@ function Header() {
       navigate("/");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
-      // Even if the API call fails, clear local storage, cookies and redirect
       localStorage.removeItem("token");
       removeCookie("auth_token");
       navigate("/");

@@ -28,10 +28,8 @@ function QuizDetails() {
       setLoading(true);
       setError("");
       try {
-        // Fetch quiz info
         const quizRes = await api.get(`/v1/quiz/${quizId}`);
         setQuiz(quizRes.data);
-        // Fetch attempts
         const attemptsRes = await api.get(`/v1/quiz/${quizId}/attempts`);
         setAttempts(attemptsRes.data);
       } catch (err) {
@@ -97,7 +95,6 @@ function QuizDetails() {
     return name.replace(/[^a-z0-9\-_. ]/gi, "_").replace(/\s+/g, "_");
   }
 
-  // CSV Export function
   function exportAttemptsToCSV() {
     if (!attempts.length) {
       toast.error("Nenhuma tentativa para exportar.");
@@ -117,7 +114,6 @@ function QuizDetails() {
         row.map((field) => `"${String(field).replace(/"/g, '""')}"`).join(",")
       ),
     ].join("\n");
-    // Add UTF-8 BOM for Excel compatibility
     const blob = new Blob(["\uFEFF" + csvContent], {
       type: "text/csv;charset=utf-8;",
     });
@@ -173,7 +169,7 @@ function QuizDetails() {
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         break;
       case "guestUser":
-        comparison = a.guestUser ? 1 : -1; // Guest users first
+        comparison = a.guestUser ? 1 : -1;
         break;
       default:
         comparison = 0;
