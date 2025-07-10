@@ -27,6 +27,7 @@ function QuizResults() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [attempt, setAttempt] = useState<QuizAttemptDTO | null>(null);
   const [loading, setLoading] = useState(true);
+
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -192,6 +193,8 @@ function QuizResults() {
     
     return { correct, incorrect, total };
   };
+
+
 
   const handleRetakeQuiz = () => {
     navigate(`/quiz/${quizId}`);

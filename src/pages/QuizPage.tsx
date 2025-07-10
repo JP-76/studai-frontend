@@ -35,7 +35,7 @@ function QuizPage() {
   const [showHints, setShowHints] = useState<boolean[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [timeSpent, setTimeSpent] = useState<number>(0);
+
   const [liveElapsed, setLiveElapsed] = useState<number>(0);
 
   useEffect(() => {
@@ -167,7 +167,6 @@ function QuizPage() {
 
     const endTime = Date.now();
     const elapsed = startTime ? Math.floor((endTime - startTime) / 1000) : 0; // in seconds
-    setTimeSpent(elapsed);
 
     const payload = {
       quizId: quiz.id,
@@ -214,10 +213,7 @@ function QuizPage() {
     );
   };
 
-  const getQuestionProgress = () => {
-    const answered = answers.filter((a) => a.selectedAnswer).length;
-    return `${answered}/${quiz?.questions.length || 0}`;
-  };
+
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
