@@ -8,11 +8,9 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import * as pdfjsLib from "pdfjs-dist";
+import { PDFDocument } from "pdf-lib";
 import api from "../lib/axios";
 import Layout from "../components/Layout";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = "/js/pdf.worker.min.js";
 
 function Home() {
   const navigate = useNavigate();
@@ -48,8 +46,8 @@ function Home() {
   const countPdfPages = async (file: File): Promise<number> => {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      return pdf.numPages;
+      const pdf = await PDFDocument.load(arrayBuffer);
+      return pdf.getPageCount();
     } catch (error) {
       console.error("Erro ao contar páginas do PDF:", error);
       throw new Error("Não foi possível ler o arquivo PDF");
@@ -111,7 +109,7 @@ function Home() {
         questionsQuantity: 10,
         sourceType: "PDF_CONTENT",
         languageCode: "PT",
-        startPage: 1,
+        startPage: 0,
         endPage: pdfPageCount, // Usar o número real de páginas
       };
 
