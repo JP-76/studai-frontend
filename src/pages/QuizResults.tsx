@@ -6,8 +6,6 @@ import {
   FaChartLine,
   FaCheckCircle,
   FaTimesCircle,
-  FaShare,
-  FaCopy,
   FaRedo,
   FaHome,
   FaLightbulb,
@@ -28,7 +26,7 @@ function QuizResults() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [attempt, setAttempt] = useState<QuizAttemptDTO | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showShareModal, setShowShareModal] = useState(false);
+
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -195,16 +193,7 @@ function QuizResults() {
     return { correct, incorrect, total };
   };
 
-  const handleShareResults = () => {
-    setShowShareModal(true);
-  };
 
-  const handleCopyLink = () => {
-    const resultsUrl = `${window.location.origin}/quiz/${quizId}/results`;
-    navigator.clipboard.writeText(resultsUrl);
-    toast.success("Link dos resultados copiado!");
-    setShowShareModal(false);
-  };
 
   const handleRetakeQuiz = () => {
     navigate(`/quiz/${quizId}`);
