@@ -6,7 +6,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.11-38B2AC)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This repository contains the **frontend application** for the StudAI project, a modern React-based web application that provides an intuitive interface for AI-powered quiz generation and management. The frontend seamlessly integrates with the [StudAI Backend](https://github.com/jhoonatademuner/studai) to deliver a complete learning experience.
+This repository contains the **frontend application** for the StudAI project, a modern React-based web application that provides an intuitive interface for AI-powered quiz generation and management. The frontend seamlessly integrates with the [StudAI Backend](https://github.com/jhonatademuner/studai) and the [StudAI Assistant](https://github.com/kenzokomati/studai-assistant) to deliver a complete learning experience.
 
 ## ✨ Key Features
 - **AI Quiz Generation** - Create quizzes from topics, YouTube videos, or PDF documents
